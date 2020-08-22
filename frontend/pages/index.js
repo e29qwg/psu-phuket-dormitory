@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import qs from 'qs'
 
 const Index = () => {
 
@@ -18,9 +19,18 @@ const Index = () => {
     }
 
     const getAuthen = async () => {
-        const result = await axios.post('http://localhost', "test")
-        // setResponse(result.data)
-        console.log(result.data)
+        try {
+            const result = await axios.post('http://localhost', qs.stringify(form), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                    // 'Content-Type': 'application/json'
+                }
+            })
+            setResponse(result.data)
+            console.log(result.data)
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     React.useEffect(() => {
@@ -33,7 +43,7 @@ const Index = () => {
             <div className="form">
                 <input type="text" name="username" onChange={handleForm} />
                 <input type="password" name="password" onChange={handleForm} />
-                <button onClick={() => getAuthen()}>Login</button>
+                <button onClick={getAuthen}>Login</button>
             </div>
         </div>
     )
