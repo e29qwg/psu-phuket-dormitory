@@ -9,9 +9,8 @@ app.use(bodyParser.urlencoded({ extended: true }), router)
 app.use(bodyParser.json, router)
 
 router.route('/')
-
     .post((req, res) => {
-        console.log(req.body)
+        console.log(req)
         soap.createClient(url, (err, client) => {
             if (err) console.error(err);
             else {
@@ -29,5 +28,4 @@ router.route('/')
             }
         });
     })
-
 module.exports = router

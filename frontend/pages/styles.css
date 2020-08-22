@@ -1,0 +1,12 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.form {
+    grid-column: 3/4;
+    grid-row: 3/4;
+    display: flex;
+    flex-direction: column;
+}
