@@ -2,9 +2,13 @@ require('tls').DEFAULT_MIN_VERSION = 'TLSv1'   // since TLSv1.3 default disable 
 const express = require('express');
 const bodyParser = require('body-parser')
 const soap = require('soap');
+const { userUsecase } = require('./usecase/userUsecase')
+
+
 const url = 'https://passport.psu.ac.th/authentication/authentication.asmx?wsdl';
 const app = express()
 const router = express.Router()
+
 // const cors = require('cors')
 // app.use(cors())
 // app.use(bodyParser.urlencoded({ extended: false }), router)
@@ -30,7 +34,10 @@ router
                     if (err) console.error(err);
                     else {
                         console.log(response);
-                        res.send(response)
+                        const responseData = {
+                            role: userUsecase.getRole(response)
+                        }
+                        res.send(responseData)
                     }
                 });
             }

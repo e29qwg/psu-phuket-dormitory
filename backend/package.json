@@ -10,5 +10,8 @@
     "express": "^4.17.1",
     "next": "^9.5.2",
     "soap": "^0.33.0"
+  },
+  "scripts": {
+    "start": "node index.js"
   }
 }

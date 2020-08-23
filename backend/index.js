@@ -5,7 +5,8 @@ const cors = require('cors')
 const Login = require('./login')
 
 app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }), Login)
-app.use(bodyParser.json, Login)
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(Login)
 
 app.listen(80, () => console.log('Server is ready!'))
