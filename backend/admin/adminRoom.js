@@ -1,19 +1,22 @@
 const express = require('express');
+const firestore = require('./firebaseconnect/connect')
 
+const db = firestore.firestore;
 const app = express()
 const router = express.Router()
 
-router.get('/rooms',(req,res) => {
-    const mainStatus = req.body.mainStatus
-    const openAll = req.body.openAll
-    const closeAll = req.body.closeAll
+router.get('admin/rooms/:floorID',(req,res) => {
+  
+      const floorRef = db.doc('/dormitory/{floorID}')
+      res.send(floorRef);
 });
 
-router.get('/rooms/:id',(req,res) => {
-    const roomIdStatus = req.body.roomIdStatus
-    
-});
-
-router.delete('/rooms/:id', (req, res) => {
-
+router.delete('admin/rooms/:floorID/:roomID/:studentID', (req, res) => {
+ 
+        const docRef = db.doc('/dormitory/{floorID}/{roomID}/{studentID}')
+        docRef
+        .delete()
+        if (err) console.error(err);
+        else console.log("delete success");
+        
 });

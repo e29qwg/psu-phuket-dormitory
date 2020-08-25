@@ -2,7 +2,7 @@ require('tls').DEFAULT_MIN_VERSION = 'TLSv1'   // since TLSv1.3 default disable 
 const express = require('express');
 const bodyParser = require('body-parser')
 const soap = require('soap');
-const { userUsecase } = require('./admin/usecase/userUsecase')
+const { userUsecase } = require('./usecase/userUsecase')
 
 
 const url = 'https://passport.psu.ac.th/authentication/authentication.asmx?wsdl';
@@ -16,62 +16,68 @@ const router = express.Router()
 
 router
     .route('/')
-    .get((req, res) => {
-        res.send('Get')
-        console.log(req)
-    })
+   
     .post((req, res) => {
 
         soap.createClient(url, (err, client) => {
             if (err) console.error(err);
-            else if(req.body.username.length==0){
-                res.send("กรุณาใส่ ID");
-            }
-            else if(req.body.password.length==0){
-                res.send("กรุณาใส่ Password");
-            }
-            else if(req.body.username.length==0&&req.body.password.length==0){
-                res.send("กรุณาใส่ ID และ Password");
-            }
-            else {
-                let user = {}
-                user.username = req.body.username
-                user.password = req.body.password
-                user.type = req.body.type
-                console.log(user)
-
-                client.GetUserDetails(user, function (err, response) {
-                    if (err) console.error(err);
-                    else {
-                        console.log(response);
-                        const responseData = {
-                            role: userUsecase.getRole(response)
+            else if(req.body.type!==undefined){
+                console.log(req.body.type)
+                if(req.body.username==undefined&&req.body.password!==undefined){
+                    res.send("กรุณาใส่ ID");
+                }
+                else if(req.body.username!==undefined&&req.body.password==undefined){
+                    res.send("กรุณาใส่ Password");
+                }
+                else if(req.body.username==undefined&&req.body.password==undefined){
+                    res.send("กรุณาใส่ ID และ Password");
+                }
+                else {
+                    let user = {}
+                    user.username = req.body.username
+                    user.password = req.body.password
+                    user.type = req.body.type
+                    console.log(user)
+    
+                    client.GetUserDetails(user, function (err, response) {
+                        if (err) console.error(err);
+                        else {
+                            console.log(response);
+                            const responseData = {
+                                role: userUsecase.getRole(response)
+                            }
+                            console.log(responseData)
+                            if(user.type=='Students'){
+                                if(user.type==responseData.role){
+                                    res.send({
+                                        login:true,
+                                        type:responseData.role
+                                    })
+                                }
+                                else{
+                                    res.send("คุณไม่ใช่นักศึกษา");
+                                }
+                            }
+                            else if(user.type=="Staffs"){
+                                if(user.type==responseData.role){
+                                    res.send({
+                                        login:true,
+                                        type:responseData.role
+                                    })
+                                }
+                                else{
+                                    res.send("คุณไม่ใช่เจ้าหน้าที่");
+                                }
+                            }
                         }
-                        if(user.type=="Students"){
-                            if(user.type==responseData){
-                                res.send({
-                                    login:true,
-                                    type:responseData
-                                })
-                            }
-                            else{
-                                res.send("คุณไม่ใช่นักศึกษา");
-                            }
-                        }
-                        if(user.type=="Staffs"){
-                            if(user.type==responseData){
-                                res.send({
-                                    login:true,
-                                    type:responseData
-                                })
-                            }
-                            else{
-                                res.send("คุณไม่ใช่เจ้าหน้าที่");
-                            }
-                        }
-                    }
-                });
+                    });
+                }
             }
+            else if(req.body.type==undefined){
+                res.send("กรุณาเลือกสถานะ");
+            }
+            
+           
         });
     })
 
