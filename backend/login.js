@@ -81,5 +81,5 @@ router
         });
     })
 
-module.exports = router
+module.exports = router;
 // app.listen(80, () => console.log('Server is ready!'))
