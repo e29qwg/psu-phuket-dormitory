@@ -1,15 +1,9 @@
 const express = require('express');
-const firestore = require('./firebaseconnect/connect')
+const db = require('./firebaseconnect/connect')
 
-const db = firestore.firestore;
 const app = express()
 const router = express.Router()
 
-let data = {
-    id:"",
-    name:"",
-    surname:""
-}
 
 router.get('student/rooms/:floorID',(req,res) => {
     const floorID = req.params.floorID;
@@ -18,7 +12,11 @@ router.get('student/rooms/:floorID',(req,res) => {
 });
 
 router.post('/student/rooms/:floorID/:roomID/:studentID', (req, res) => {
-    let student = {};
+    let students = {
+        id:"",
+        name:"",
+        surname:""
+    }
 
     const floorID = req.params.floorID;
     const roomID = req.params.roomID;
@@ -28,9 +26,10 @@ router.post('/student/rooms/:floorID/:roomID/:studentID', (req, res) => {
      student.id = req.body.id
      student.name = req.body.name
      student.surname = req.body.surname
+     students.push(student)
 
     docRef
-    .set(student)
+    .set(students)
     if (err) console.error(err);
     else console.log("booking success");
 
