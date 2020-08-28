@@ -1,7 +1,9 @@
 const express = require('express');
-const db = require('../firebaseconnect/connect')
-const cors = require('cors')
-const bodyParser = require('body-parser')
+const firestore = require('../config/firebase')
+const cors = require('cors');
+const bodyParser = require('body-parser');
+
+const db = firestore.firestore()
 const app = express()
 const router = express.Router()
 app.use(cors())
@@ -11,7 +13,13 @@ app.use(bodyParser.json(), router)
 router.get('student/rooms/:floorID', (req, res) => {
     const floorID = req.params.floorID;
     const floorRef = db.doc(`/dormitory/${floorID}`)
-    res.send(floorRef);
+    const doc = floorRef.get();
+    if (!doc.exists) {
+        console.log('No such document!');
+      } else {
+        console.log('Document data:', doc.data());
+      }
+
 });
 
 router.post('/student/rooms/:floorID/:roomID/:studentID', (req, res) => {
