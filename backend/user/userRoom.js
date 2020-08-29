@@ -2,6 +2,7 @@ const express = require('express');
 const firestore = require('../config/firebase')
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const { json } = require('body-parser');
 
 const db = firestore.firestore()
 const app = express()
@@ -10,16 +11,21 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }), router)
 app.use(bodyParser.json(), router)
 
-router.get('student/rooms/:floorID', (req, res) => {
+router.get('/student/rooms/:floorID/',(req,res) => {
     const floorID = req.params.floorID;
     const floorRef = db.doc(`/dormitory/${floorID}`)
-    const doc = floorRef.get();
-    if (!doc.exists) {
-        console.log('No such document!');
-      } else {
-        console.log('Document data:', doc.data());
-      }
+    floorRef.listCollections().then((floor)=>
+    {
+        floor.forEach(room=>{   
+            room.get().then((student)=>{
+                student.forEach(data=>{
+                    console.log(data.data())
+                })     
+            })
 
+        })
+    })
+    res.send("floorRef");
 });
 
 router.post('/student/rooms/:floorID/:roomID/:studentID', (req, res) => {

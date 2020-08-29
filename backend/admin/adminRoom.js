@@ -12,9 +12,18 @@ app.use(bodyParser.json(), router)
 
 router.get('/admin/rooms/:floorID',(req,res) => {
       const floorID = req.params.floorID;
-      
-      const floorRef = db.collection('/dormitory/').doc(`${floorID}`)
-      floorRef.get().then((doc)=>{console.log(doc.data())})
+      const floorRef = db.doc(`/dormitory/${floorID}`)
+      floorRef.listCollections().then((floor)=>
+      {
+          floor.forEach(room=>{   
+              room.get().then((student)=>{
+                  student.forEach(data=>{
+                      console.log(data.data())
+                  })     
+              })
+  
+          })
+      })
       res.send("floorRef");
 });
 
