@@ -15,10 +15,11 @@ router.get('/admin/rooms/:floorID',(req,res) => {
       const floorRef = db.doc(`/dormitory/${floorID}`)
       floorRef.listCollections().then((floor)=>
       {
-          floor.forEach(room=>{   
-              room.get().then((student)=>{
-                  student.forEach(data=>{
-                      console.log(data.data())
+            floor.forEach(room=>{   
+                  console.log(room.id)
+                  room.get().then((student)=>{
+                        student.forEach(data=>{
+                        console.log(data.data())
                   })     
               })
   
