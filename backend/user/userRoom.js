@@ -11,22 +11,81 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }), router)
 app.use(bodyParser.json(), router)
 
+
+const getStudents = async (room) => {
+    return await new Promise((resolve, reject) => {
+        room.get().then((students)=>{
+            let studentsLists = [];
+            students.forEach(student=>{
+                // console.log(data.data())
+                let studentData = {
+                    sudentType: student.id
+                }
+
+                studentData = Object.assign(studentData, student.data());
+                studentsLists.push(studentData);
+                
+            })
+            resolve(studentsLists); 
+        })
+    })
+}
+
+const getRooms = async (floor) => {
+    
+    let roomsResov = await new Promise(async (resolve, reject) => {
+        let rooms = [];
+        floor.forEach(async room=>{
+            let roomList = {
+                roomId: '',
+                students: []
+            } 
+            
+            roomList.roomId = room.id;
+            // console.log(room.id) 
+
+            let studentResolve = await getStudents(room);
+            roomList.students = studentResolve;
+            rooms.push(roomList);            
+        })
+
+        resolve(rooms)
+
+        // console.log('rooms', rooms)
+    });
+
+    console.log('roomsResov', roomsResov);
+}
+
+
 router.get('/student/rooms/:floorID/',(req,res) => {
     const floorID = req.params.floorID;
     const floorRef = db.doc(`/dormitory/${floorID}`)
-    floorRef.listCollections().then((floor)=>
+    
+    floorRef.listCollections().then(async (floor)=>
     {
-        floor.forEach(room=>{  
-            console.log(room.id) 
-            room.get().then((student)=>{
-                student.forEach(data=>{
-                    console.log(data.data())
-                })     
-            })
+        let rooms = [];
 
-        })
+        await getRooms(floor)
+
+
+        // floor.forEach(async room=>{
+        //     let roomList = {
+        //         roomId: '',
+        //         students: []
+        //     } 
+            
+        //     roomList.roomId = room.id;
+        //     // console.log(room.id) 
+
+        //     let studentResolve = await getStudents(room);
+        //     roomList.students = studentResolve;
+        //     rooms.push(roomList);               
+        // })
+        // rooms.push(roomList);
+        res.send(rooms); 
     })
-    res.send("floorRef");
+    
 });
 
 router.post('/student/rooms/:floorID/:roomID/:studentID', (req, res) => {
