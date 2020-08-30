@@ -17,13 +17,12 @@ const getStudents = async (room) => {
         room.get().then((students)=>{
             let studentsLists = [];
             students.forEach(student=>{
-                // console.log(data.data())
                 let studentData = {
                     sudentType: student.id
                 }
-
                 studentData = Object.assign(studentData, student.data());
                 studentsLists.push(studentData);
+                console.log(studentsLists);
                 
             })
             resolve(studentsLists); 
@@ -54,7 +53,7 @@ const getRooms = async (floor) => {
         // console.log('rooms', rooms)
     });
 
-    console.log('roomsResov', roomsResov);
+    //console.log('roomsResov', roomsResov);
 }
 
 
@@ -64,7 +63,7 @@ router.get('/student/rooms/:floorID/',(req,res) => {
     
     floorRef.listCollections().then(async (floor)=>
     {
-        let rooms = [];
+        //let rooms = [];
 
         await getRooms(floor)
 
@@ -83,7 +82,7 @@ router.get('/student/rooms/:floorID/',(req,res) => {
         //     rooms.push(roomList);               
         // })
         // rooms.push(roomList);
-        res.send(rooms); 
+       // res.send(rooms); 
     })
     
 });
