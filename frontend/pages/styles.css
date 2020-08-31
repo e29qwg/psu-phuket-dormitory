@@ -1,3 +1,44 @@
+.navbar-container {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: #000;
+    align-items: center;
+    color: #FFF;
+}
+
+div.hamburger-container {
+    display: block;
+    background: #000;
+}
+
+@media screen and (min-width:500px) {
+    div.hamburger-container {
+        display: none;
+        background: #000;
+    }
+    div.navbar-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        background-color: #000;
+        align-items: center;
+        color: #FFF;
+    }
+}
+
+img.hamburger {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    filter: invert(100%);
+}
+
+.navbar-container>span {
+    font-family: 'Itim', cursive;
+    margin: 5px;
+}
+
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
