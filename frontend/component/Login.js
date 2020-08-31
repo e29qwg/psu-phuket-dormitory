@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import qs from 'qs'
 
-const Index = () => {
+const Login = () => {
 
     const [form, setForm] = React.useState({
         username: "",
@@ -37,10 +37,15 @@ const Index = () => {
     }, [])
 
     return (
-        <div className="index-container">
-            <img className="index-background" src='background/cover.jpg' alt="cover" />
+        <div className="login-container">
+            <div>{JSON.stringify(response)}</div>
+            <div className="login-form">
+                <input type="text" name="username" onChange={handleForm} />
+                <input type="password" name="password" onChange={handleForm} />
+                <button onClick={getAuthen}>Login</button>
+            </div>
         </div>
     )
 }
 
-export default Index
+export default Login
