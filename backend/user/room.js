@@ -16,15 +16,15 @@ const getStudents = async (room) => {
     return await new Promise((resolve, reject) => {
         room.get().then((students)=>{
             let studentsLists = [];
-            students.forEach(student=>{
+            students.forEach( student=>{
                 let studentData = {
-                    sudentType: student.id
+                    studentType: student.id,
                 }
-                studentData = Object.assign(studentData, student.data());
-                studentsLists.push(studentData);
-                console.log(studentsLists);
-                
+                let studentResult = Object.assign(studentData, student.data()); 
+                studentsLists.push(studentResult);
+                //console.log(studentsLists);          
             })
+            
             resolve(studentsLists); 
         })
     })
@@ -41,8 +41,6 @@ const getRooms = async (floor) => {
             } 
             
             roomList.roomId = room.id;
-            // console.log(room.id) 
-
             let studentResolve = await getStudents(room);
             roomList.students = studentResolve;
             rooms.push(roomList);            
