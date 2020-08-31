@@ -35,7 +35,7 @@ router.delete('/admin/rooms/:floorID/:roomID/:studentID', (req, res) => {
             const studentID = req.params.studentID;
             const FieldValue = firestore.firestore.FieldValue;
             const docRef = db.doc(`/dormitory/${floorID}/${roomID}/${studentID}`)
-            const res = docRef.update({
+            docRef.update({
                   id:FieldValue.delete(),
                   name:FieldValue.delete(),
                   surname:FieldValue.delete()

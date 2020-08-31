@@ -12,77 +12,54 @@ app.use(bodyParser.urlencoded({ extended: false }), router)
 app.use(bodyParser.json(), router)
 
 
-const getStudents = async (room) => {
-    return await new Promise((resolve, reject) => {
-        room.get().then((students)=>{
-            let studentsLists = [];
-            students.forEach( student=>{
+const getStudents = (room) => {
+    let studentsLists =[];
+    return  new Promise((resolve, reject) => {
+        room.get().then((students) => {
+            students.forEach(student => {
                 let studentData = {
                     studentType: student.id,
                 }
-                let studentResult = Object.assign(studentData, student.data()); 
+                let studentResult = Object.assign(studentData, student.data());
                 studentsLists.push(studentResult);
-                //console.log(studentsLists);          
-            })
-            
-            resolve(studentsLists); 
+                    
+            })  
+            resolve(studentsLists);
         })
     })
 }
 
-const getRooms = async (floor) => {
-    
-    let roomsResov = await new Promise(async (resolve, reject) => {
+
+const getRooms = (floor) => {
+    return  new Promise( (resolve, reject) => {
         let rooms = [];
-        floor.forEach(async room=>{
+        floor.forEach(async room => {
             let roomList = {
-                roomId: '',
-                students: []
-            } 
-            
-            roomList.roomId = room.id;
-            let studentResolve = await getStudents(room);
-            roomList.students = studentResolve;
-            rooms.push(roomList);            
-        })
-
+                roomId: room.id,
+                students:[]
+            }
+            roomList.students = await getStudents(room);
+            rooms.push(roomList);
+           
+        })  
+        
+       console.log(rooms)
         resolve(rooms)
-
-        // console.log('rooms', rooms)
+        
     });
-
-    //console.log('roomsResov', roomsResov);
 }
 
 
-router.get('/student/rooms/:floorID/',(req,res) => {
+router.get('/student/rooms/:floorID/',(req, res) => {
     const floorID = req.params.floorID;
     const floorRef = db.doc(`/dormitory/${floorID}`)
-    
-    floorRef.listCollections().then(async (floor)=>
-    {
-        //let rooms = [];
 
-        await getRooms(floor)
+    floorRef.listCollections().then(async (floor) => {
 
-
-        // floor.forEach(async room=>{
-        //     let roomList = {
-        //         roomId: '',
-        //         students: []
-        //     } 
-            
-        //     roomList.roomId = room.id;
-        //     // console.log(room.id) 
-
-        //     let studentResolve = await getStudents(room);
-        //     roomList.students = studentResolve;
-        //     rooms.push(roomList);               
-        // })
-        // rooms.push(roomList);
-       // res.send(rooms); 
+        await getRooms(floor);
+        //console.log(await getRooms(floor))
+        //res.send(result)
     })
-    
 });
 
 router.post('/student/rooms/:floorID/:roomID/:studentID', (req, res) => {
@@ -106,8 +83,8 @@ router.post('/student/rooms/:floorID/:roomID/:studentID', (req, res) => {
 
         docRef
             .set(student)
-            console.log(student);
-            res.status(200).send("booking success");
+        console.log(student);
+        res.status(200).send("booking success");
     } catch (error) {
         console.log(error)
     }
