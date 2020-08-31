@@ -1,9 +1,9 @@
 import React from 'react'
+import Router from 'next/router'
 
 const NavigationBar = ({ children }) => {
     const [hamburgerMenu, setHamburgermenu] = React.useState(false)
     const ref = React.useRef()
-    const bodyRef = React.useRef()
 
     const hamburgerToggle = () => {
         setHamburgermenu(!hamburgerMenu)
@@ -15,6 +15,10 @@ const NavigationBar = ({ children }) => {
         if (hamburgerMenu) setHamburgermenu(!hamburgerMenu)
         if (window.innerWidth < 500)
             ref.current.style.display = 'none';
+    }
+
+    const handleRoute = (url) => {
+        Router.push(url)
     }
 
     React.useEffect(() => {
@@ -30,11 +34,11 @@ const NavigationBar = ({ children }) => {
             }
             {
                 <div ref={ref} onClick={hamburgerToggle} className="navbar-container">
-                    <span>หน้าแรก</span>
-                    <span>บทความ</span>
-                    <span>บริการ</span>
-                    <span>เกี่ยวกับเรา</span>
-                    <span>ติดต่อ</span>
+                    <span onClick={() => handleRoute('/')}>หน้าแรก</span>
+                    <span onClick={() => handleRoute('Book')}>จองห้อง</span>
+                    <span onClick={() => handleRoute('/')}>เกี่ยวกับเรา</span>
+                    <span onClick={() => handleRoute('/')}>ติดต่อ</span>
+                    <span onClick={() => handleRoute('Login')}>ลงชื่อเข้าใช้</span>
                 </div>
             }
             <div onClick={handleTabClose}>{children}</div>
