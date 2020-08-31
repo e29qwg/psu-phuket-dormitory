@@ -47,7 +47,7 @@ router.delete('/admin/rooms/:floorID/:roomID/:studentID', (req, res) => {
       catch (error) {
             console.log(error)
       }
-     
 });
+
 app.listen(80, () => console.log('Server is ready!'))
 //module.exports = router;
