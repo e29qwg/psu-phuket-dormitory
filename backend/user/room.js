@@ -12,15 +12,15 @@ app.use(bodyParser.urlencoded({ extended: false }), router)
 app.use(bodyParser.json(), router)
 
 
-const getStudents = (room) => {
+const getStudents = async room => {
     let studentsLists =[];
-    return  new Promise((resolve, reject) => {
+    return  await new Promise((resolve, reject) => {
         room.get().then((students) => {
-            students.forEach(student => {
+            students.forEach(async student => {
                 let studentData = {
                     studentType: student.id,
                 }
-                let studentResult = Object.assign(studentData, student.data());
+                let studentResult = await Object.assign(studentData, student.data());
                 studentsLists.push(studentResult);
                     
             })  
@@ -51,14 +51,34 @@ const getRooms = (floor) => {
 
 
 router.get('/student/rooms/:floorID/',(req, res) => {
+    let rooms=[];
+   
+   
     const floorID = req.params.floorID;
     const floorRef = db.doc(`/dormitory/${floorID}`)
+    floorRef.listCollections().then((floor) => {
+        floor.forEach(room=>{  
+            let roomList={
+                roomId: '',
+                student:[]
+            }
+            roomList.roomId = room.id;
+            room.get().then((student)=>{
+                let studentList=[];
+                student.forEach( profile=>{
+                     let studentData ={
+                        studentType:'',
+                     }
+                    
+                    studentData.studentType=profile.id;
+                    let studentResult  = Object.assign(studentData, profile.data());
+                     studentList.push(studentResult)
 
-    floorRef.listCollections().then(async (floor) => {
-
-        await getRooms(floor);
-        //console.log(await getRooms(floor))
-        //res.send(result)
+                })   
+                console.log(studentList)
+            })
+        })
+        //await getRooms(floor); แบบเก่า
     })
 });
 
