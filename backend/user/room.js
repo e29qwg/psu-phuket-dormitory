@@ -21,8 +21,7 @@ const getStudents = async room => {
                     studentType: student.id,
                 }
                 let studentResult = await Object.assign(studentData, student.data());
-                studentsLists.push(studentResult);
-                    
+                studentsLists.push(studentResult);     
             })  
             resolve(studentsLists);
         })
@@ -31,8 +30,8 @@ const getStudents = async room => {
 
 
 const getRooms = (floor) => {
+    let rooms = [];
     return  new Promise( (resolve, reject) => {
-        let rooms = [];
         floor.forEach(async room => {
             let roomList = {
                 roomId: room.id,
@@ -40,45 +39,18 @@ const getRooms = (floor) => {
             }
             roomList.students = await getStudents(room);
             rooms.push(roomList);
-           
-        })  
-        
-       console.log(rooms)
+            console.log(roomList)   
+        })     
         resolve(rooms)
-        
     });
 }
 
 
 router.get('/student/rooms/:floorID/',(req, res) => {
-    let rooms=[];
-   
-   
     const floorID = req.params.floorID;
     const floorRef = db.doc(`/dormitory/${floorID}`)
-    floorRef.listCollections().then((floor) => {
-        floor.forEach(room=>{  
-            let roomList={
-                roomId: '',
-                student:[]
-            }
-            roomList.roomId = room.id;
-            room.get().then((student)=>{
-                let studentList=[];
-                student.forEach( profile=>{
-                     let studentData ={
-                        studentType:'',
-                     }
-                    
-                    studentData.studentType=profile.id;
-                    let studentResult  = Object.assign(studentData, profile.data());
-                     studentList.push(studentResult)
-
-                })   
-                console.log(studentList)
-            })
-        })
-        //await getRooms(floor); แบบเก่า
+    floorRef.listCollections().then(async (floor)=>{
+        await getRooms(floor); 
     })
 });
 
