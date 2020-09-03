@@ -14,7 +14,6 @@ app.use(bodyParser.json(), router)
 router.post('/student/profile', (req, res) => {
     try {
         let users = []; 
-        const docRef = db.doc('/students/data')
         let user={
             profile:{
                 id: "",
@@ -191,7 +190,7 @@ router.post('/student/profile', (req, res) => {
         user.other.position = req.body.other.position
 
         users.push(user);
-
+        const docRef = db.doc('/students/data')
         docRef
             .set(users)
             console.log(users);
