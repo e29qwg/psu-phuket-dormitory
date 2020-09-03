@@ -12,21 +12,27 @@ app.use(bodyParser.json(), router)
 
 
 router.get('/student/rooms/:floorId/', async (req, res) => {
-    const floorId = req.params.floorId;
-    const docRef = db.collection(`${floorId}`);
-    const roomRef = await docRef.get()
-    let result=[];
-    roomRef.forEach(profile=>{
-        let profileList={
-            profileId : '',
-            
+    try {
+        const floorId = req.params.floorId;
+        const docRef = db.collection(`${floorId}`);
+        const roomRef = await docRef.get()
+        let result=[];
+
+        roomRef.forEach(profile=>{
+            let profileList={
+                profileId : '',     
         }
+
         profileList.profileId = profile.id
-        Object.assign(profileList, profile.data() )
+        Object.assign(profileList, profile.data())
         result.push(profileList)
         
     })
     res.status(200).send(result);
+    } catch (error) {
+        console.log(error)
+    }
+    
 });
 
 
@@ -63,7 +69,7 @@ router.post('/student/rooms/:floorId/:roomId/:studentId', (req, res) => {
             studentData.student1.tel = req.body.tel
 
             docRef.set(studentData)
-            res.status(200).send("booking success");
+            res.status(200).send("booking student1 success");
         }
         else if(studentId == "student2"){
             studentData.student2.id = req.body.id
@@ -73,13 +79,11 @@ router.post('/student/rooms/:floorId/:roomId/:studentId', (req, res) => {
             studentData.student2.tel = req.body.tel
 
             docRef.set(studentData)
-            console.log(studentData);
-            res.status(200).send("booking success");
+            res.status(200).send("booking student2 success");
         }
         else{
-            console.log("ข้อมูลผิดพลาด")
+            res.status(200).send("booking failed");
         }
-
     } catch (error) {
         console.log(error)
     }
