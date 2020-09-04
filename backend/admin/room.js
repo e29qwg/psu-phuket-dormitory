@@ -10,39 +10,54 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }), router)
 app.use(bodyParser.json(), router)
 
-router.get('/admin/rooms/:floorID',(req,res) => {
-      const floorID = req.params.floorID;
-      const floorRef = db.doc(`/dormitory/${floorID}`)
-      floorRef.listCollections().then((floor)=>
-      {
-            floor.forEach(room=>{   
-                  console.log(room.id)
-                  room.get().then((student)=>{
-                        student.forEach(data=>{
-                        console.log(data.data())
-                  })     
-              })
-  
-          })
-      })
-      res.send("floorRef");
-});
-
-router.delete('/admin/rooms/:floorID/:roomID/:studentID', (req, res) => {
+router.get('/student/rooms/:floorId/', async (req, res) => {
       try {
-            const floorID = req.params.floorID;
-            const roomID = req.params.roomID;
-            const studentID = req.params.studentID;
+            const floorId = req.params.floorId;
+            const docRef = db.collection(`${floorId}`);
+            const roomRef = await docRef.get()
+            let result=[];
+            roomRef.forEach(profile=>{
+
+                let profileList = {
+                    profileId : '',      
+                }
+
+                profileList.profileId = profile.id
+                Object.assign(profileList, profile.data() )
+                result.push(profileList)
+                
+            })
+            res.status(200).send(result);  
+      } catch (error) {
+            console.log(error)
+      }
+  
+  });
+
+router.delete('/admin/rooms/:floorId/:roomId/:studentId', (req, res) => {
+      try {
+            const floorId = req.params.floorId;
+            const roomId = req.params.roomId;
+            const studentId = req.params.studentId;
             const FieldValue = firestore.firestore.FieldValue;
-            const docRef = db.doc(`/dormitory/${floorID}/${roomID}/${studentID}`)
-            const res = docRef.update({
-                  id:FieldValue.delete(),
-                  name:FieldValue.delete(),
-                  surname:FieldValue.delete()
-            });
-            //res.send(res);
-            // console.log("delete success");
-            // res.status(200).send("delete success");
+            const docRef = db.doc(`/${floorId}/${roomId}`)
+            const value = `${studentId}`
+            
+            if (value == "student1") {
+                  docRef.update({
+                        student1:FieldValue.delete()
+                  })
+                  res.status(200).send("delete student1 success");
+            }
+            else if(value == "student2"){
+                  docRef.update({
+                        student2:FieldValue.delete()
+                  })
+                  res.status(200).send("delete student2 success");
+            }
+            else{
+                  res.status(200).send("delete failed");
+            }
       } 
       catch (error) {
             console.log(error)

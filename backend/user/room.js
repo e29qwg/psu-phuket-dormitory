@@ -2,7 +2,6 @@ const express = require('express');
 const firestore = require('../config/firebase')
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { json } = require('body-parser');
 
 const db = firestore.firestore()
 const app = express()
@@ -12,102 +11,79 @@ app.use(bodyParser.urlencoded({ extended: false }), router)
 app.use(bodyParser.json(), router)
 
 
-const getStudents = async (room) => {
-    return await new Promise((resolve, reject) => {
-        room.get().then((students)=>{
-            let studentsLists = [];
-            students.forEach( student=>{
-                let studentData = {
-                    studentType: student.id,
-                }
-                let studentResult = Object.assign(studentData, student.data()); 
-                studentsLists.push(studentResult);
-                //console.log(studentsLists);          
-            })
-            
-            resolve(studentsLists); 
-        })
+router.get('/student/rooms/:floorId/', async (req, res) => {
+    try {
+        const floorId = req.params.floorId;
+        const docRef = db.collection(`${floorId}`);
+        const roomRef = await docRef.get()
+        let result=[];
+
+        roomRef.forEach(profile=>{
+            let profileList={
+                profileId : '',     
+        }
+
+        profileList.profileId = profile.id
+        Object.assign(profileList, profile.data())
+        result.push(profileList)
+        
     })
-}
-
-const getRooms = async (floor) => {
-    
-    let roomsResov = await new Promise(async (resolve, reject) => {
-        let rooms = [];
-        floor.forEach(async room=>{
-            let roomList = {
-                roomId: '',
-                students: []
-            } 
-            
-            roomList.roomId = room.id;
-            let studentResolve = await getStudents(room);
-            roomList.students = studentResolve;
-            rooms.push(roomList);            
-        })
-
-        resolve(rooms)
-
-        // console.log('rooms', rooms)
-    });
-
-    //console.log('roomsResov', roomsResov);
-}
-
-
-router.get('/student/rooms/:floorID/',(req,res) => {
-    const floorID = req.params.floorID;
-    const floorRef = db.doc(`/dormitory/${floorID}`)
-    
-    floorRef.listCollections().then(async (floor)=>
-    {
-        //let rooms = [];
-
-        await getRooms(floor)
-
-
-        // floor.forEach(async room=>{
-        //     let roomList = {
-        //         roomId: '',
-        //         students: []
-        //     } 
-            
-        //     roomList.roomId = room.id;
-        //     // console.log(room.id) 
-
-        //     let studentResolve = await getStudents(room);
-        //     roomList.students = studentResolve;
-        //     rooms.push(roomList);               
-        // })
-        // rooms.push(roomList);
-       // res.send(rooms); 
-    })
+    res.status(200).send(result);
+    } catch (error) {
+        console.log(error)
+    }
     
 });
 
-router.post('/student/rooms/:floorID/:roomID/:studentID', (req, res) => {
+
+router.post('/student/rooms/:floorId/:roomId/:studentId', (req, res) => {
     try {
-        let student = {
-            id: "",
-            name: "",
-            surname: ""
+        let studentData = {
+            student1: {
+                id: "",
+                name: "",
+                surname: "",
+                nickname:"",
+                tel:""
+            },
+            student2:{
+                id: "",
+                name: "",
+                surname: "",
+                nickname:"",
+                tel:""
+            }
+         
         }
 
-        const floorID = req.params.floorID;
-        const roomID = req.params.roomID;
-        const studentID = req.params.studentID;
-        const docRef = db.doc(`/dormitory/${floorID}/${roomID}/${studentID}`)
+        const floorId = req.params.floorId;
+        const roomId = req.params.roomId;
+        const studentId = req.params.studentId;
 
-        student.id = req.body.id
-        student.name = req.body.name
-        student.surname = req.body.surname
+        const docRef = db.doc(`/${floorId}/${roomId}`)
+        if(studentId == "student1"){
+            studentData.student1.id = req.body.id
+            studentData.student1.name = req.body.name
+            studentData.student1.surname = req.body.surname
+            studentData.student1.nickname = req.body.nickname
+            studentData.student1.tel = req.body.tel
 
-        console.log(student);
+            docRef.set(studentData)
+            res.status(200).send("booking student1 success");
+        }
+        else if(studentId == "student2"){
+            studentData.student2.id = req.body.id
+            studentData.student2.name = req.body.name
+            studentData.student2.surname = req.body.surname
+            studentData.student2.nickname = req.body.nickname
+            studentData.student2.tel = req.body.tel
 
-        docRef
-            .set(student)
-            console.log(student);
-            res.status(200).send("booking success");
+            docRef.set(studentData)
+            res.status(200).send("booking student2 success");
+        }
+        else{
+            res.status(200).send("booking failed");
+        }
     } catch (error) {
         console.log(error)
     }
