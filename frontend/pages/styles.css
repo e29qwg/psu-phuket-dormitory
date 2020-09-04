@@ -1,4 +1,9 @@
+.root-container {
+    grid-template-rows: 1fr auto 1fr;
+}
+
 .navbar-container {
+    min-height: 10vh;
     display: none;
     flex-direction: column;
     justify-content: space-around;
@@ -41,35 +46,115 @@ img.hamburger {
 }
 
 .login-container {
+    height: calc(90vh);
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
 }
 
 .login-form {
-    grid-column: 3/4;
-    grid-row: 3/4;
+    grid-column: 5/9;
+    grid-row: 5/9;
     display: flex;
     flex-direction: column;
 }
 
+@media screen and (max-width:500px) {
+    .login-container {
+        height: calc(90vh);
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-template-rows: repeat(12, 1fr);
+    }
+    .login-form {
+        align-self: center;
+        grid-column: 2/12;
+        grid-row: 2/12;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.login-form>input, button {
+    margin: 5px;
+}
+
 .index-container {
-    width: 100%;
-    height: 100%;
+    min-height: calc(70vh);
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: 1fr 1fr 1fr 1fr;
 }
 
 .index-background {
-    width: 100%;
+    width: 100vw;
+    height: 50vh;
     grid-column: span 12;
     grid-row: span 2;
     opacity: .7;
 }
 
-.footer-container {
+@media screen and (max-width:500px) {
+    .index-background {
+        width: 100vw;
+        height: 30vh;
+        grid-column: span 12;
+        grid-row: span 2;
+        opacity: .7;
+    }
+}
+
+/* Reserve */
+
+.floor-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+}
+
+.reserve-container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    width: 100vw;
+    height: 100vw;
+}
+
+/* .building */
+
+.building-container {
+    grid-column: span 12;
+    grid-row: span 12;
+    display: grid;
+    grid-template-columns: 10vw repeat(8, 10vw) 10vw;
+    grid-template-rows: 10vw repeat(8, 10vw) 10vw;
+}
+
+.left {
+    grid-column: 5/13;
+    grid-row: span 4;
+    background: pink;
+}
+
+.right {
+    grid-column: span 4;
+    grid-row: 5/13;
+    background: pink;
+}
+
+.left-floor {
+    flex: 1;
+    height: 80vw;
+    background: pink;
+}
+
+.right-floor {
+    flex: 1;
+    background: yellow;
+}
+
+.footer-container {
+    min-height: 20vh;
+    display: flex;
+    flex-direction: row;
     justify-content: space-between;
 }

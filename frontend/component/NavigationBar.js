@@ -1,7 +1,7 @@
 import React from 'react'
 import Router from 'next/router'
 
-const NavigationBar = ({ children }) => {
+const NavigationBar = () => {
     const [hamburgerMenu, setHamburgermenu] = React.useState(false)
     const ref = React.useRef()
 
@@ -26,7 +26,7 @@ const NavigationBar = ({ children }) => {
     }, [])
 
     return (
-        <div>
+        <div className="root-navbar-container">
             {
                 !hamburgerMenu && <div onClick={hamburgerToggle} className="hamburger-container">
                     <img className="hamburger" src="/icon/Hamburger_icon.svg.png" alt="Hambuger Menu" />
@@ -35,13 +35,13 @@ const NavigationBar = ({ children }) => {
             {
                 <div ref={ref} onClick={hamburgerToggle} className="navbar-container">
                     <span onClick={() => handleRoute('/')}>หน้าแรก</span>
-                    <span onClick={() => handleRoute('Book')}>จองห้อง</span>
+                    <span onClick={() => handleRoute('Reserve')}>จองห้อง</span>
                     <span onClick={() => handleRoute('/')}>เกี่ยวกับเรา</span>
                     <span onClick={() => handleRoute('/')}>ติดต่อ</span>
                     <span onClick={() => handleRoute('Login')}>ลงชื่อเข้าใช้</span>
                 </div>
             }
-            <div onClick={handleTabClose}>{children}</div>
+            {/* <div onClick={handleTabClose}></div> */}
         </div>
     )
 }
