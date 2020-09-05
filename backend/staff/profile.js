@@ -10,19 +10,12 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }), router)
 app.use(bodyParser.json(), router)
 
-router.get('/admin/profile/:id', async (req, res) => {
+router.get('/staff/profile/:studentId',async (req, res) => {
     try {
-        const id = req.params.id
-        const docRef = db.collection('students');
-        const snapshot =await docRef.where("profile","==",`${id}`).get()
-        if (snapshot.empty) {
-            console.log('No matching documents.');
-            return;
-          }  
-          
-          snapshot.forEach(doc => {
-            console.log(doc.id, '=>', doc.data());
-          });
+        const studentId = req.params.studentId
+        const docRef = db.collection('students').doc(`${studentId}`);
+        const profile = await docRef.get();
+        res.status(200).send(profile.data());
     }
     catch (error) {
         console.log(error)

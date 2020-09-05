@@ -10,7 +10,7 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }), router)
 app.use(bodyParser.json(), router)
 
-router.get('/student/rooms/:floorId/', async (req, res) => {
+router.get('/staff/rooms/:floorId/', async (req, res) => {
       try {
             const floorId = req.params.floorId;
             const docRef = db.collection(`${floorId}`);
@@ -34,7 +34,7 @@ router.get('/student/rooms/:floorId/', async (req, res) => {
   
   });
 
-router.delete('/admin/rooms/:floorId/:roomId/:studentId', (req, res) => {
+router.delete('/staff/rooms/:floorId/:roomId/:studentId', (req, res) => {
       try {
             const floorId = req.params.floorId;
             const roomId = req.params.roomId;
