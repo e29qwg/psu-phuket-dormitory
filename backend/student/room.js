@@ -1,17 +1,17 @@
 const express = require('express');
-const firestore = require('../config/firebase')
+const firestore = require('../configs/firebase')
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+const requireJWTAuth = require("../configs/jwt")
 const db = firestore.firestore()
 const app = express()
 const router = express.Router()
+const jwt = require("jwt-simple")
+
 app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
 app.use(router)
 
-router.get('/room/:floorId/', async (req, res) => {
+router.get('/room/:floorId/', requireJWTAuth ,async (req, res) => {
     try {
         const floorId = req.params.floorId;
         const docRef = db.collection(`${floorId}`);
@@ -36,7 +36,7 @@ router.get('/room/:floorId/', async (req, res) => {
 });
 
 
-router.post('/room/:floorId/:roomId/:studentId', (req, res) => {
+router.post('/room/:floorId/:roomId/:studentId',requireJWTAuth, (req, res) => {
     try {
         let studentData = {
             student1: {

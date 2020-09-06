@@ -1,18 +1,17 @@
 const express = require('express');
-const firestore = require('../config/firebase')
+const firestore = require('../configs/firebase')
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const db = firestore.firestore()
 const app = express()
 const router = express.Router()
+const jwt = require("jwt-simple")
 app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
 app.use(router)
+const requireJWTAuth = require("../configs/jwt")
 
-
-router.get('/profile/:studentId',async (req, res) => {
+router.get('/profile/:studentId',requireJWTAuth,async (req, res) => {
     try {
         const studentId = req.params.studentId
         const docRef = db.collection('students').doc(`${studentId}`);
@@ -25,7 +24,7 @@ router.get('/profile/:studentId',async (req, res) => {
 });
 
 
-router.post('/profile/:studentId', (req, res) => {
+router.post('/profile/:studentId',requireJWTAuth, (req, res) => {
     try {
         const user={
             profile:{
