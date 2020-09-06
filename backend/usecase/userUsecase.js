@@ -12,6 +12,11 @@ class UserUsecase {
         return result;
     }
 
+    getStudentId(dataFromSoup) {
+        let result = dataFromSoup.GetUserDetailsResult.string[0];
+        return result;
+    }
+
     getLastArray(array = []) {
         const lastArray = array[array.length - 1]
         return lastArray

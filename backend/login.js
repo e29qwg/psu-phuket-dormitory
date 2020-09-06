@@ -9,11 +9,6 @@ const url = 'https://passport.psu.ac.th/authentication/authentication.asmx?wsdl'
 const app = express()
 const router = express.Router()
 
-// const cors = require('cors')
-// app.use(cors())
-// app.use(bodyParser.urlencoded({ extended: false }), router)
-// app.use(bodyParser.json, router)
-
 router
     .route('/')
    
@@ -44,6 +39,7 @@ router
                         else {
                             console.log(response);
                             const responseData = {
+                                studentId:userUsecase.getStudentId(response),
                                 role: userUsecase.getRole(response)
                             }
                             console.log(responseData)
@@ -51,6 +47,7 @@ router
                                 if(user.type==responseData.role){
                                     res.send({
                                         login:true,
+                                        id:responseData.studentId,
                                         type:responseData.role
                                     })
                                 }
@@ -62,6 +59,7 @@ router
                                 if(user.type==responseData.role){
                                     res.send({
                                         login:true,
+                                        id:responseData.studentId,
                                         type:responseData.role
                                     })
                                 }

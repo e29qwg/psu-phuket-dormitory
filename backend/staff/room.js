@@ -7,10 +7,11 @@ const db = firestore.firestore();
 const app = express()
 const router = express.Router()
 app.use(cors())
-app.use(bodyParser.urlencoded({ extended: false }), router)
-app.use(bodyParser.json(), router)
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(router)
 
-router.get('/staff/rooms/:floorId/', async (req, res) => {
+router.get('/rooms/:floorId/', async (req, res) => {
       try {
             const floorId = req.params.floorId;
             const docRef = db.collection(`${floorId}`);
@@ -34,7 +35,7 @@ router.get('/staff/rooms/:floorId/', async (req, res) => {
   
   });
 
-router.delete('/staff/rooms/:floorId/:roomId/:studentId', (req, res) => {
+router.delete('/rooms/:floorId/:roomId/:studentId', (req, res) => {
       try {
             const floorId = req.params.floorId;
             const roomId = req.params.roomId;
@@ -64,5 +65,4 @@ router.delete('/staff/rooms/:floorId/:roomId/:studentId', (req, res) => {
       }
 });
 
-app.listen(80, () => console.log('Server is ready!'))
-//module.exports = router;
+module.exports = router;
