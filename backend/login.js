@@ -3,79 +3,39 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const soap = require('soap');
 const { userUsecase } = require('./usecase/userUsecase')
-
-
+const jwt = require("jwt-simple")
 const url = 'https://passport.psu.ac.th/authentication/authentication.asmx?wsdl';
-const app = express()
 const router = express.Router()
 
-router
-    .route('/')
-   
+router.route('/')
     .post((req, res) => {
-
         soap.createClient(url, (err, client) => {
-            if (err) console.error(err);
-            else if(req.body.type!==undefined){
-                console.log(req.body.type)
-                if(req.body.username==undefined&&req.body.password!==undefined){
-                    res.send("กรุณาใส่ ID");
+            let user = {}
+            user.username = req.body.username
+            user.password = req.body.password
+            user.type = req.body.type
+
+            client.GetUserDetails(user, function (err, response) {
+                const responseData = {
+                    studentId:userUsecase.getStudentId(response),
+                    role: userUsecase.getRole(response)
                 }
-                else if(req.body.username!==undefined&&req.body.password==undefined){
-                    res.send("กรุณาใส่ Password");
+                if(user.type==responseData.role){
+                    res.send(
+                        jwt.encode({
+                            username: req.body.username,
+                            login:true,
+                            id:responseData.studentId,
+                            type:responseData.role
+                        },
+                        "MY_SECRET_KEY"
+                        )
+                    )
                 }
-                else if(req.body.username==undefined&&req.body.password==undefined){
-                    res.send("กรุณาใส่ ID และ Password");
+                else{
+                    res.sendStatus(401)
                 }
-                else {
-                    let user = {}
-                    user.username = req.body.username
-                    user.password = req.body.password
-                    user.type = req.body.type
-                    console.log(user)
-    
-                    client.GetUserDetails(user, function (err, response) {
-                        if (err) console.error(err);
-                        else {
-                            console.log(response);
-                            const responseData = {
-                                studentId:userUsecase.getStudentId(response),
-                                role: userUsecase.getRole(response)
-                            }
-                            console.log(responseData)
-                            if(user.type=='Students'){
-                                if(user.type==responseData.role){
-                                    res.send({
-                                        login:true,
-                                        id:responseData.studentId,
-                                        type:responseData.role
-                                    })
-                                }
-                                else{
-                                    res.send("คุณไม่ใช่นักศึกษา");
-                                }
-                            }
-                            else if(user.type=="Staffs"){
-                                if(user.type==responseData.role){
-                                    res.send({
-                                        login:true,
-                                        id:responseData.studentId,
-                                        type:responseData.role
-                                    })
-                                }
-                                else{
-                                    res.send("คุณไม่ใช่เจ้าหน้าที่");
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-            else if(req.body.type==undefined){
-                res.send("กรุณาเลือกสถานะ");
-            }
-            
-           
+            });         
         });
     })
 

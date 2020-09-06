@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const requireJWTAuth = require("./configs/jwt");
 const login = require('./login')
 const studentProfile = require('./student/profile')
 const studentRoom = require('./student/room')
@@ -11,9 +12,12 @@ const staffRoom = require('./staff/room')
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+
 app.use(login)
+app.use('/staff',requireJWTAuth)
 app.use('/staff',staffProfile);
 app.use('/staff',staffRoom);
+app.use('/student',requireJWTAuth)
 app.use('/student',studentProfile);
 app.use('/student',studentRoom);
 

@@ -42,6 +42,7 @@ const Login = ({ children }) => {
             <div className="login-container">
                 <div>{JSON.stringify(response)}</div>
                 <div className="login-form">
+                    <img src="https://image.flaticon.com/icons/svg/271/271228.svg" alt="close login bar" />
                     <label htmlFor="username">PSU Passport</label>
                     <input type="text" name="username" placeholder="username" onChange={handleForm} />
                     <input type="password" name="password" placeholder="password" onChange={handleForm} />
