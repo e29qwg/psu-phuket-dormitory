@@ -4,7 +4,7 @@ import qs from 'qs'
 import { LoginState } from '../utils/Login'
 
 const Login = ({ children }) => {
-    const [isLogin] = React.useContext(LoginState)
+    const [isLogin, setIsLogin] = React.useContext(LoginState)
     const [form, setForm] = React.useState({
         username: "",
         password: ""
@@ -41,14 +41,16 @@ const Login = ({ children }) => {
         <>
             <div className="login-container">
                 <div>{JSON.stringify(response)}</div>
-                <div className="login-form">
+                <button onClick={() => setIsLogin(!isLogin)}>
                     <img src="https://image.flaticon.com/icons/svg/271/271228.svg" alt="close login bar" />
+                </button>
+                <div className="login-form">
                     <label htmlFor="username">PSU Passport</label>
                     <input type="text" name="username" placeholder="username" onChange={handleForm} />
                     <input type="password" name="password" placeholder="password" onChange={handleForm} />
                     <label htmlFor="สถานะ" className="status">สถานะ</label>
                     <select name="สถานะ">
-                        <option value="นักเรียน">นักเรียน</option>
+                        <option value="นักเรียน">นักศึกษา</option>
                         <option value="เจ้าหน้าที่">เจ้าหน้าที่</option>
                         <option value="อาจารย์">อาจารย์</option>
                     </select>

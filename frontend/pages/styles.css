@@ -50,6 +50,8 @@ img.hamburger {
     margin: 5px;
 }
 
+/* login */
+
 .login-container {
     position: fixed;
     background: #FFF;
@@ -69,6 +71,18 @@ img.hamburger {
     grid-row: 2/11;
     display: flex;
     flex-direction: column;
+}
+
+.login-container>button {
+    grid-column: 1/13;
+    grid-row: 1/2;
+    cursor: pointer;
+}
+
+.login-container>button>img {
+    height: 5vw;
+    width: 5vw;
+    cursor: pointer;
 }
 
 @media screen and (max-width:500px) {
@@ -131,26 +145,35 @@ img.hamburger {
     height: 100vw;
 }
 
-/* .building */
-
 .building-container {
-    grid-column: span 12;
-    grid-row: span 12;
     display: grid;
     grid-template-columns: 10vw repeat(8, 10vw) 10vw;
     grid-template-rows: 10vw repeat(8, 10vw) 10vw;
 }
 
 .left {
-    grid-column: 5/13;
-    grid-row: span 4;
+    grid-column: 6/9;
+    grid-row: 2/4;
     background: pink;
 }
 
 .right {
-    grid-column: span 4;
-    grid-row: 5/13;
+    grid-column: 4/6;
+    grid-row: 4/7;
     background: pink;
+}
+
+@media screen and (max-width:500px) {
+    .left {
+        grid-column: 4/10;
+        grid-row: 2/4;
+        background: pink;
+    }
+    .right {
+        grid-column: 2/4;
+        grid-row: 4/10;
+        background: pink;
+    }
 }
 
 .left-floor {

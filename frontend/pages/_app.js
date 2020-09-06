@@ -19,7 +19,7 @@ export default function MyApp({ Component, pageProps }) {
                     margin:0;
                     padding:0;
                     background: hsla(0, 0%, 80%, .65);
-                    width:100;
+                    width:100vw;
                     font-size: 16px;
                 }
             `}</style>
