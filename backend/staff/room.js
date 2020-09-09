@@ -9,51 +9,52 @@ const router = express.Router()
 app.use(cors())
 app.use(router)
 
-router.route('/staff/room/:floorId/')
-      .get(requireJWTAuth,async (req, res) => {
-            try {
-                  
-                  const floorId = req.params.floorId;
-                  const docRef = db.collection(`${floorId}`);
-                  const roomRef = await docRef.get()
-                  let result=[];
-                  roomRef.forEach(profile=>{
+router.post('/staff/room/',requireJWTAuth,(req, res) => {
+      try {
+            const statusDormitory = {
+                  system:req.body.system,
+                  all:req.body.all,
+            };
+            const docRef = db.doc('/dormitory/status')
+            docRef.set(statusDormitory)
+            res.status(200).send("change status");
 
-                        let profileList = {
-                              profileId : '',      
-                        }
+      } catch (error) {
+            console.log(error)
+      }
+});
 
-                        profileList.profileId = profile.id
-                        Object.assign(profileList, profile.data() )
-                        result.push(profileList)
+router.get('/staff/room/:floorId/',requireJWTAuth,async (req, res) => {
+      try {
+            const floorId = req.params.floorId;
+            const docRef = db.collection(`${floorId}`);
+            const roomRef = await docRef.get()
+            let result=[];
+
+            roomRef.forEach(profile=>{
+
+                  let profileList = {
+                        profileId : '',      
+                  }
+
+                  profileList.profileId = profile.id
+                  Object.assign(profileList, profile.data() )
+                  result.push(profileList)
                 
-                  })
-                  res.status(200).send(result);  
-            } catch (error) {
-                  console.log(error)
-            }
-      })
+            })
+            res.status(200).send(result);  
 
-      .post(requireJWTAuth,(req, res) => {
-            try {
-                  const statusDormitory = {
-                        system:req.body.system,
-                        all:req.body.all,
-                  };
-                  const floorId = req.params.floorId;
-                  const docRef = db.doc(`${floorId}/status`)
-                  docRef.set(statusDormitory)
-                  res.status(200).send("change status");
+      } catch (error) {
+            console.log(error)
+      }
+})
 
-            } catch (error) {
-                  console.log(error)
-            }
-      });
+     
 
 router.post('/staff/room/:floorId/:roomId',requireJWTAuth,async (req, res) => {
       try {
             const statusRoom = {
-                  room:req.body.room
+                  roomStatus:req.body.roomStatus
             }
 
             const floorId = req.params.floorId;
