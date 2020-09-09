@@ -3,7 +3,7 @@ const app = express();
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const requireJWTAuth = require("./configs/jwt");
-const login = require('./login')
+const accessControl = require('./access')
 const studentProfile = require('./student/profile')
 const studentRoom = require('./student/room')
 const staffProfile = require('./staff/profile')
@@ -13,12 +13,12 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.use(login)
+app.use(accessControl)
 app.use('/staff',requireJWTAuth)
-app.use('/staff',staffProfile);
-app.use('/staff',staffRoom);
+app.use(staffProfile);
+app.use(staffRoom);
 app.use('/student',requireJWTAuth)
-app.use('/student',studentProfile);
-app.use('/student',studentRoom);
+app.use(studentProfile);
+app.use(studentRoom);
 
 app.listen(80, () => console.log('Server is ready!'))

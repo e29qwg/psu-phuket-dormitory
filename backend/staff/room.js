@@ -1,41 +1,73 @@
 const express = require('express');
 const firestore= require('../configs/firebase')
 const cors = require('cors')
-const bodyParser = require('body-parser')
 const requireJWTAuth = require("../configs/jwt")
 const db = firestore.firestore();
 const app = express()
 const router = express.Router()
-const jwt = require("jwt-simple")
 
 app.use(cors())
 app.use(router)
 
-router.get('/rooms/:floorId/', requireJWTAuth,async (req, res) => {
-      try {
-            const floorId = req.params.floorId;
-            const docRef = db.collection(`${floorId}`);
-            const roomRef = await docRef.get()
-            let result=[];
-            roomRef.forEach(profile=>{
+router.route('/staff/room/:floorId/')
+      .get(requireJWTAuth,async (req, res) => {
+            try {
+                  
+                  const floorId = req.params.floorId;
+                  const docRef = db.collection(`${floorId}`);
+                  const roomRef = await docRef.get()
+                  let result=[];
+                  roomRef.forEach(profile=>{
 
-                let profileList = {
-                    profileId : '',      
-                }
+                        let profileList = {
+                              profileId : '',      
+                        }
 
-                profileList.profileId = profile.id
-                Object.assign(profileList, profile.data() )
-                result.push(profileList)
+                        profileList.profileId = profile.id
+                        Object.assign(profileList, profile.data() )
+                        result.push(profileList)
                 
-            })
-            res.status(200).send(result);  
+                  })
+                  res.status(200).send(result);  
+            } catch (error) {
+                  console.log(error)
+            }
+      })
+
+      .post(requireJWTAuth,(req, res) => {
+            try {
+                  const statusDormitory = {
+                        system:req.body.system,
+                        all:req.body.all,
+                  };
+                  const floorId = req.params.floorId;
+                  const docRef = db.doc(`${floorId}/status`)
+                  docRef.set(statusDormitory)
+                  res.status(200).send("change status");
+
+            } catch (error) {
+                  console.log(error)
+            }
+      });
+
+router.post('/staff/room/:floorId/:roomId',requireJWTAuth,async (req, res) => {
+      try {
+            const statusRoom = {
+                  room:req.body.room
+            }
+
+            const floorId = req.params.floorId;
+            const roomId = req.params.roomId;
+            const docRef = db.collection(`${floorId}`).doc(`${roomId}`)
+            await docRef.update(statusRoom)
+            res.status(200).send("change status");
+
       } catch (error) {
             console.log(error)
       }
-  
-  });
+});
 
-router.delete('/rooms/:floorId/:roomId/:studentId',requireJWTAuth, (req, res) => {
+router.delete('/staff/room/:floorId/:roomId/:studentId',requireJWTAuth, (req, res) => {
       try {
             const floorId = req.params.floorId;
             const roomId = req.params.roomId;
