@@ -12,21 +12,34 @@ app.use(router)
 router.get('/student/room/:floorId/', requireJWTAuth ,async (req, res) => {
     try {
         const floorId = req.params.floorId;
-        const docRef = db.collection(`${floorId}`);
-        const roomRef = await docRef.get()
-        let result=[];
+        const checkRef = db.collection(`${floorId}`).doc('status');
+        const checkStatus = await checkRef.get()
+        const check = Object.values(checkStatus.data())
+        const checkDormitory = check[0]
+        const checkAllroom = check[1]
+        if (checkDormitory) {
+            const docRef = db.collection(`${floorId}`);
+            const roomRef = await docRef.get()
+            let result=[];
 
-        roomRef.forEach(profile=>{
-            let profileList={
-                profileId : '',     
-        }
+            roomRef.forEach(profile=>{
+                let profileList={
+                    profileId : '',     
+                }
 
-        profileList.profileId = profile.id
-        Object.assign(profileList, profile.data())
-        result.push(profileList)
+                profileList.profileId = profile.id
+                Object.assign(profileList, profile.data())
+                result.push(profileList)
         
-    })
-    res.status(200).send(result);
+            })
+            res.status(200).send({
+                result,
+                statusAllroom:checkAllroom
+            });
+        } else {
+            res.send("ระบบยังไม่เปิดจอง");;
+        }
+        
     } catch (error) {
         console.log(error)
     }

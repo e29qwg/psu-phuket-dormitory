@@ -16,22 +16,26 @@ router.post('/', (req, res) => {
     
             client.GetUserDetails(user, function (err, response) {
                 const responseData = {
-                    studentId:userUsecase.getStudentId(response),
+                    userId:userUsecase.getStudentId(response),
                     role: userUsecase.getRole(response)
                 }
+                const payload = {
+                    username: req.body.username ,
+                    id: responseData.userId ,
+                    type: responseData.role
+                }
+                const secret = "MY_SECRET_KEY"
+                const encoded = jwt.encode(payload,secret,'HS256')
                 if(user.type==responseData.role){
-                    res.status(200).send(
-                        jwt.encode({
-                            username: req.body.username,
-                            id:responseData.studentId,
-                            type:responseData.role
-                        },
-                        "MY_SECRET_KEY"
-                        )
-                    )
+                    res.status(200).send({
+                        login:true,
+                        id: responseData.userId,
+                        type:responseData.role,
+                        token:encoded
+                    })
                 }
                 else{
-                    res.sendStatus(401)
+                    res.sendStatus(400)
                 }
             });         
         }); 
