@@ -1,7 +1,9 @@
 import React from 'react'
 import Router from 'next/router'
+import { LoginState } from '../utils/Login'
 
 const NavigationBar = () => {
+    const [isLongin, setIsLogin] = React.useContext(LoginState)
     const [hamburgerMenu, setHamburgermenu] = React.useState(false)
     const ref = React.useRef()
 
@@ -21,6 +23,15 @@ const NavigationBar = () => {
         Router.push(url)
     }
 
+    const handleLogin = () => {
+        setIsLogin(!isLongin)
+        console.log(isLongin)
+    }
+
+    const LoginOrLogout = () => {
+        return isLongin ? "ออกจากระบบ" : "ลงชื่อเข้าใช้"
+    }
+
     React.useEffect(() => {
 
     }, [])
@@ -36,9 +47,8 @@ const NavigationBar = () => {
                 <div ref={ref} onClick={hamburgerToggle} className="navbar-container">
                     <span onClick={() => handleRoute('/')}>หน้าแรก</span>
                     <span onClick={() => handleRoute('Reserve')}>จองห้อง</span>
-                    <span onClick={() => handleRoute('/')}>เกี่ยวกับเรา</span>
-                    <span onClick={() => handleRoute('/')}>ติดต่อ</span>
-                    <span onClick={() => handleRoute('Login')}>ลงชื่อเข้าใช้</span>
+                    <span onClick={() => handleRoute('/')}>แจ้งซ่อม</span>
+                    <span onClick={handleLogin}>{LoginOrLogout()}</span>
                 </div>
             }
             {/* <div onClick={handleTabClose}></div> */}

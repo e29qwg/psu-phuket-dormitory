@@ -2,22 +2,30 @@ import './styles.css'
 import '../component/NavigationBar'
 import NavigationBar from '../component/NavigationBar'
 import Footer from '../component/Footer'
+import { LoginState } from '../utils/Login'
+import LoginModal from '../component/Login'
+
 // This default export is required in a new `pages/_app.js` file.
 export default function MyApp({ Component, pageProps }) {
+    const [isLogin, setIsLogin] = React.useState(false)
     return (
-        <div className="root-container">
-            <NavigationBar />
-            <Component {...pageProps} />
-            <style jsx global>{`
+        <LoginState.Provider value={[isLogin, setIsLogin]}>
+            <div className="root-container">
+                <NavigationBar />
+                <LoginModal>
+                    <Component {...pageProps} />
+                    <style jsx global>{`
                 html, body{
                     margin:0;
                     padding:0;
                     background: hsla(0, 0%, 80%, .65);
-                    width:100;
+                    width:100vw;
                     font-size: 16px;
                 }
             `}</style>
-            <Footer />
-        </div>
+                    <Footer />
+                </LoginModal >
+            </div>
+        </LoginState.Provider>
     )
 }
