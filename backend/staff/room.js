@@ -47,9 +47,7 @@ router.get('/staff/room/:floorId/',requireJWTAuth,async (req, res) => {
       } catch (error) {
             console.log(error)
       }
-})
-
-     
+})  
 
 router.post('/staff/room/:floorId/:roomId',requireJWTAuth,async (req, res) => {
       try {

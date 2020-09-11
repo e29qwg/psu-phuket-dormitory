@@ -9,12 +9,20 @@ const router = express.Router()
 app.use(cors())
 app.use(router)
 
-router.get('/staff/profile/:studentId',requireJWTAuth,async (req, res) => {
+router.get('/staff/profile/', requireJWTAuth , async (req, res) => {
     try {
-        const studentId = req.params.studentId
-        const docRef = db.collection('students').doc(`${studentId}`);
+        let studentList = []
+        const docRef = db.collection('students')
         const profile = await docRef.get();
-        res.status(200).send(profile.data());
+        profile.forEach(list => {
+            let studentData = {
+                studentId : '',
+            }
+            studentData.studentId = list.id
+            Object.assign(studentData,list.data())
+            studentList.push(studentData)
+        })
+        res.status(200).send(studentList);
     }
     catch (error) {
         console.log(error)
