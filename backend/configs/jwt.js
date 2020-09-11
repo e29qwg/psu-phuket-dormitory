@@ -1,11 +1,13 @@
-const jwt = require("jwt-simple")
+const jwt = require('jsonwebtoken');
 const passport = require("passport")
+const fs = require('fs')
 
 //ใช้ในการ decode jwt ออกมา
 const ExtractJwt = require("passport-jwt").ExtractJwt
 //ใช้ในการประกาศ Strategy
 const JwtStrategy = require("passport-jwt").Strategy
-const SECRET = "MY_SECRET_KEY"
+let privateKey = fs.readFileSync('./private.pem', 'utf8');
+const SECRET = privateKey
 //สร้าง Strategy
 const jwtOptions = {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

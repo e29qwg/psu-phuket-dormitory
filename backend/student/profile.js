@@ -9,7 +9,7 @@ const requireJWTAuth = require("../configs/jwt")
 app.use(cors())
 app.use(router)
 
-router.get('/profile/:studentId',requireJWTAuth,async (req, res) => {
+router.get('/student/profile/:studentId',requireJWTAuth,async (req, res) => {
     try {
         const studentId = req.params.studentId
         const docRef = db.collection('students').doc(`${studentId}`);
@@ -22,7 +22,7 @@ router.get('/profile/:studentId',requireJWTAuth,async (req, res) => {
 });
 
 
-router.post('/profile/:studentId',requireJWTAuth, (req, res) => {
+router.post('/student/profile/:studentId',requireJWTAuth, (req, res) => {
     try {
         const user={
             profile:{
