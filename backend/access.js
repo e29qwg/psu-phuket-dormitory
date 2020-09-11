@@ -27,6 +27,7 @@ router.post('/', (req, res) => {
 
             client.GetUserDetails(user, async function (err, response) {
                 const responseData = {
+
                     userId: userUsecase.getStudentId(response),
                     role: userUsecase.getRole(response)
                 }
@@ -100,6 +101,5 @@ router.post('/', (req, res) => {
 
 })
 
-
 module.exports = router;
-// app.listen(80, () => console.log('Server is ready!'))
+
