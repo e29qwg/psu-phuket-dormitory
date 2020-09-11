@@ -1,2 +1,3 @@
-config/serviceAccountKey.json
+configs/serviceAccountKey.json
+configs/private.pem
 node_modules
