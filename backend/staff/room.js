@@ -1,13 +1,11 @@
 const express = require('express');
-const firestore = require('../configs/firebase')
-const cors = require('cors')
+const cors = require('cors');
 const requireJWTAuth = require("../configs/jwt")
-const db = firestore.firestore();
+const firestore = require('../configs/firebase')
+
 const app = express()
 const router = express.Router()
-
-app.use(cors())
-app.use(router)
+const db = firestore.firestore()
 
 router.post('/staff/room/', requireJWTAuth, (req, res) => {
       try {
