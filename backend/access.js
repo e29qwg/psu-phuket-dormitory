@@ -60,9 +60,7 @@ router.post('/', (req, res) => {
                         })
                     } else {
                         snapshot.forEach(doc => {
-
                             oldToken.push(doc.data())
-
                         });
                         oldToken.find(obj => {
                             jwt.verify(obj.token, privateKey, { algorithm: "HS256" }, async (err, decoded) => {

@@ -8,9 +8,7 @@ const Index = () => {
         username: "",
         password: ""
     })
-
-    const [response, setResponse] = React.useState()
-
+    
     const handleForm = (event) => {
         setForm({
             ...form,

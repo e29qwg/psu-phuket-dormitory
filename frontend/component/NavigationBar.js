@@ -1,9 +1,12 @@
 import React from 'react'
 import Router from 'next/router'
-import { LoginState } from '../utils/Login'
+import { LoginState } from '../utils/context'
+import axios from 'axios'
 
 const NavigationBar = () => {
-    const [isLongin, setIsLogin] = React.useContext(LoginState)
+    const { Token, Modal } = React.useContext(LoginState)
+    const [token, setToken] = Token
+    const [showModal, setShowModal] = Modal
     const [hamburgerMenu, setHamburgermenu] = React.useState(false)
     const ref = React.useRef()
 
@@ -24,16 +27,24 @@ const NavigationBar = () => {
     }
 
     const handleLogin = () => {
-        setIsLogin(!isLongin)
-        console.log(isLongin)
+        if (LoginOrLogout() === "ลงชื่อเข้าใช้") setShowModal(true)
+        if (LoginOrLogout() === "ออกจากระบบ") {
+            setToken(null)
+            try {
+                axios.delete(`http://localhost/logout/${token.token}`)
+            } catch (e) {
+                console.error(e)
+            }
+        }
     }
 
     const LoginOrLogout = () => {
-        return isLongin ? "ออกจากระบบ" : "ลงชื่อเข้าใช้"
+        if (token === null) return "ลงชื่อเข้าใช้"
+        else return "ออกจากระบบ"
     }
 
     React.useEffect(() => {
-
+        localStorage.getItem("token") ? setToken(JSON.parse(localStorage.getItem("token"))) : ""
     }, [])
 
     return (
@@ -51,7 +62,6 @@ const NavigationBar = () => {
                     <span onClick={handleLogin}>{LoginOrLogout()}</span>
                 </div>
             }
-            {/* <div onClick={handleTabClose}></div> */}
         </div>
     )
 }
