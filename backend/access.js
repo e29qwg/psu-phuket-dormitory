@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs')
 const url = 'https://passport.psu.ac.th/authentication/authentication.asmx?wsdl';
 const router = express.Router()
-const firestore = require('./configs/firebase')
+const firestore = require('./configs/firestore')
 const db = firestore.firestore()
 
 router.delete('/logout/:id', (req, res) => {
