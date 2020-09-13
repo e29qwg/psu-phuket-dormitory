@@ -56,16 +56,16 @@ router.post('/student/profile/:studentId', requireJWTAuth, (req, res) => {
                 postalcode: req.body.contact.postalcode
 
             },
-            infomation: {
-                school: req.body.infomation.school,
-                county: req.body.infomation.county,
-                gpa: req.body.infomation.gpa,
-                plan: req.body.infomation.plan,
-                height: req.body.infomation.height,
-                weight: req.body.infomation.weight,
-                blood: req.body.infomation.blood,
-                disease: req.body.infomation.disease,
-                drugallergy: req.body.infomation.drugallergy
+            information: {
+                school: req.body.information.school,
+                county: req.body.information.county,
+                gpa: req.body.information.gpa,
+                plan: req.body.information.plan,
+                height: req.body.information.height,
+                weight: req.body.information.weight,
+                blood: req.body.information.blood,
+                disease: req.body.information.disease,
+                drugallergy: req.body.information.drugallergy
             },
             friend: {
                 name: req.body.friend.name,

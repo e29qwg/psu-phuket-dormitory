@@ -11,7 +11,7 @@ const Login = ({ children }) => {
     const [form, setForm] = React.useState({
         username: "",
         password: "",
-        type: ""
+        type: "Students"
     })
 
     const handleForm = (event) => {
@@ -33,13 +33,13 @@ const Login = ({ children }) => {
             if (result.status === 200 && result.data.token) {
                 setShowModal(false)
                 setToken(result.data)
-                localStorage.setItem('token', JSON.stringify(result.data))
+                sessionStorage.setItem('token', JSON.stringify(result.data))
                 // console.log("Token receive => " + result.data.token)
             }
             if (result.status === 200) {
                 setShowModal(false)
                 // console.log("Loging in")
-                if (localStorage) setToken(JSON.parse(localStorage.getItem('token')))
+                if (sessionStorage) setToken(JSON.parse(sessionStorage.getItem('token')))
             }
             else if (result.status === 401) {
                 setToken(null)

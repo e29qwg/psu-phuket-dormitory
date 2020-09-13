@@ -12,7 +12,11 @@ const MyApp = ({ Component, pageProps }) => {
     const [axiosConfig, setAxiosConfig] = React.useState(null)
 
     React.useEffect(() => {
-        localStorage ? setAxiosConfig({ headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("token")).token}` } }) : ""
+        // localStorage ? setAxiosConfig({
+        //     headers: {
+        //         Authorization: `Bearer ${JSON.parse(localStorage.getItem("token")).token}`
+        //     }
+        // }) : ""
         // if (token) {
         //     setAxiosConfig({ headers: { authorization: `Bearer ${token.token}` } })
         // }
@@ -30,7 +34,7 @@ const MyApp = ({ Component, pageProps }) => {
                 <LoginModal>
                     <Component {...pageProps} />
                     <style jsx global>{`
-                html, body{
+                 html, body{
                     margin:0;
                     padding:0;
                     background: hsla(0, 0%, 80%, .65);
