@@ -30,6 +30,7 @@ const NavigationBar = () => {
         if (LoginOrLogout() === "ลงชื่อเข้าใช้") setShowModal(true)
         if (LoginOrLogout() === "ออกจากระบบ") {
             setToken(null)
+            localStorage ? localStorage.removeItem('token') : ""
             try {
                 axios.delete(`http://localhost/logout/${token.token}`)
             } catch (e) {

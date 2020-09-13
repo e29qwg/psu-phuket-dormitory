@@ -9,16 +9,21 @@ import LoginModal from '../component/Login'
 const MyApp = ({ Component, pageProps }) => {
     const [token, setToken] = React.useState(null)
     const [showModal, setShowModal] = React.useState(false)
+    const [axiosConfig, setAxiosConfig] = React.useState(null)
 
     React.useEffect(() => {
-        // localStorage ? setToken(localStorage.getItem("token")) : ""
+        localStorage ? setAxiosConfig({ headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("token")).token}` } }) : ""
+        // if (token) {
+        //     setAxiosConfig({ headers: { authorization: `Bearer ${token.token}` } })
+        // }
     }, [])
 
     return (
         <LoginState.Provider
             value={{
                 Token: [token, setToken],
-                Modal: [showModal, setShowModal]
+                Modal: [showModal, setShowModal],
+                AxiosConfig: [axiosConfig, setAxiosConfig]
             }}>
             <div className="root-container">
                 <NavigationBar />

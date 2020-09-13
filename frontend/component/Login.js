@@ -15,7 +15,6 @@ const Login = ({ children }) => {
     })
 
     const handleForm = (event) => {
-        console.log(event.target.name)
         setForm({
             ...form,
             [event.target.name]: event.target.value
@@ -35,16 +34,16 @@ const Login = ({ children }) => {
                 setShowModal(false)
                 setToken(result.data)
                 localStorage.setItem('token', JSON.stringify(result.data))
-                console.log("Token receive => " + result.data.token)
+                // console.log("Token receive => " + result.data.token)
             }
             if (result.status === 200) {
                 setShowModal(false)
-                console.log("Loging in")
+                // console.log("Loging in")
                 if (localStorage) setToken(JSON.parse(localStorage.getItem('token')))
             }
             else if (result.status === 401) {
                 setToken(null)
-                console.log('Destroyed Token')
+                // console.log('Destroyed Token')
             }
         } catch (e) {
             console.log(e)
@@ -52,7 +51,7 @@ const Login = ({ children }) => {
     }
 
     React.useEffect(() => {
-        console.log(token)
+
     }, [])
 
     if (showModal) return (

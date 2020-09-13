@@ -2,12 +2,12 @@ const express = require('express');
 const cors = require('cors');
 const requireJWTAuth = require("../configs/jwt")
 const firestore = require('../configs/firebase')
-const storage = require('../configs/storage')
+// const storage = require('../configs/storage')
 
 const app = express()
 const router = express.Router()
 const db = firestore.firestore()
-const bocket = storage.storage().bucket()
+// const bocket = storage.storage().bucket()
 
 
 app.use(cors())

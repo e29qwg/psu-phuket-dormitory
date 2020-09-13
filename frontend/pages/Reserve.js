@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
+import { LoginState } from '../utils/context'
 
 const Reserve = () => {
 
@@ -14,15 +15,17 @@ const Reserve = () => {
     const [showbuilding, setShowBuilding] = useState([])
     const [modalFloor, setModalFloor] = useState()
     const [showModal, setShowModal] = useState(false)
+    const { AxiosConfig } = useContext(LoginState)
+    const [axiosConfig, setAxiosConfig] = AxiosConfig
 
     const handleSelectFloor = async floor => {
         setShowBuilding(floor)
         let floorDetails = []
         try {
-            const roomList = await axios.get(`http://localhost/student/room/floor${floor[0]}`)
+            const roomList = await axios.get(`http://localhost/student/room/floor${floor[0]}`, axiosConfig)
             floorDetails[0] = { ...roomList.data.result }
 
-            const roomList2 = await axios.get(`http://localhost/student/room/floor${floor[1]}`)
+            const roomList2 = await axios.get(`http://localhost/student/room/floor${floor[1]}`, axiosConfig)
             floorDetails[1] = { ...roomList2.data.result }
 
             setFocusListRoom(floorDetails)
@@ -168,6 +171,7 @@ const Reserve = () => {
             </div>
             <Building />
             {showModal && <FocusFloor />}
+            <button onClick={()=>console.log(axiosConfig)}>log</button>
         </div >
     )
 }
