@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs')
 const url = 'https://passport.psu.ac.th/authentication/authentication.asmx?wsdl';
 const router = express.Router()
-const firestore = require('./configs/firestore')
+const firestore = require('./configs/firebase')
 const db = firestore.firestore()
 
 router.delete('/logout/:id', (req, res) => {
@@ -60,9 +60,7 @@ router.post('/', (req, res) => {
                         })
                     } else {
                         snapshot.forEach(doc => {
-
                             oldToken.push(doc.data())
-
                         });
                         oldToken.find(obj => {
                             jwt.verify(obj.token, privateKey, { algorithm: "HS256" }, async (err, decoded) => {

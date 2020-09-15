@@ -1,9 +1,13 @@
 import React from 'react'
 import Router from 'next/router'
-import { LoginState } from '../utils/Login'
+import { LoginState } from '../utils/context'
+import axios from 'axios'
 
 const NavigationBar = () => {
-    const [isLongin, setIsLogin] = React.useContext(LoginState)
+    const { Token, Modal, AxiosConfig } = React.useContext(LoginState)
+    const [axiosConfig, setAxiosConfig] = AxiosConfig
+    const [token, setToken] = Token
+    const [showModal, setShowModal] = Modal
     const [hamburgerMenu, setHamburgermenu] = React.useState(false)
     const ref = React.useRef()
 
@@ -24,16 +28,30 @@ const NavigationBar = () => {
     }
 
     const handleLogin = () => {
-        setIsLogin(!isLongin)
-        console.log(isLongin)
+        if (LoginOrLogout() === "ลงชื่อเข้าใช้") setShowModal(true)
+        if (LoginOrLogout() === "ออกจากระบบ") {
+            setToken(null)
+            localStorage ? localStorage.removeItem('token') : ""
+            try {
+                axios.delete(`http://localhost/logout/${token.token}`)
+            } catch (e) {
+                console.error(e)
+            }
+        }
     }
 
     const LoginOrLogout = () => {
-        return isLongin ? "ออกจากระบบ" : "ลงชื่อเข้าใช้"
+        if (token === null) return "ลงชื่อเข้าใช้"
+        else return "ออกจากระบบ"
     }
 
     React.useEffect(() => {
-
+        if (sessionStorage.getItem("token"))
+            setAxiosConfig({
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("token")).token}`
+                }
+            })
     }, [])
 
     return (
@@ -48,10 +66,10 @@ const NavigationBar = () => {
                     <span onClick={() => handleRoute('/')}>หน้าแรก</span>
                     <span onClick={() => handleRoute('Reserve')}>จองห้อง</span>
                     <span onClick={() => handleRoute('/')}>แจ้งซ่อม</span>
+                    <span onClick={() => handleRoute('/Profile')}>ข้อมูลส่วนตัว</span>
                     <span onClick={handleLogin}>{LoginOrLogout()}</span>
                 </div>
             }
-            {/* <div onClick={handleTabClose}></div> */}
         </div>
     )
 }
