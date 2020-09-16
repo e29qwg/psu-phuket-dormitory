@@ -4,6 +4,12 @@ import { LoginState } from '../utils/context'
 
 const Reserve = () => {
 
+    const { Modal, Token, AxiosConfig } = useContext(LoginState)
+    const [axiosConfig] = AxiosConfig
+    const [token, setToken] = Token
+    const [showModal, setShowModal] = Modal
+    const [showRoomSelect, setShowRoomSelect] = React.useState(false)
+
     const floorList = [
         { 1: ["A", "E"] },
         { 2: ["B", "F"] },
@@ -13,10 +19,24 @@ const Reserve = () => {
 
     const [focusRoomList, setFocusListRoom] = useState([])
     const [showbuilding, setShowBuilding] = useState([])
-    const [modalFloor, setModalFloor] = useState()
-    const [showModal, setShowModal] = useState(false)
-    const { AxiosConfig } = useContext(LoginState)
-    const [axiosConfig, setAxiosConfig] = AxiosConfig
+    const [modalFloor, setModalFloor] = useState([
+        {
+            profileID: "",
+            student1: {
+                id: 1,
+                name: "",
+                surname: "",
+                tel: "",
+                nickname: ""
+            },
+        },
+    ])
+
+    const verifyLogingIn = () => {
+        if (!token) {
+            setToken(sessionStorage.getItem('token'))
+        } setShowModal(true)
+    }
 
     const handleSelectFloor = async floor => {
         setShowBuilding(floor)
@@ -36,7 +56,7 @@ const Reserve = () => {
     }
 
     const handleFocusModal = () => {
-        setShowModal(false)
+        setShowRoomSelect(false)
     }
 
     const handleModalFloor = (section) => {
@@ -75,7 +95,7 @@ const Reserve = () => {
         }
 
         setModalFloor(temp)
-        setShowModal(true)
+        setShowRoomSelect(true)
     }
 
     const Building = () => {
@@ -93,18 +113,6 @@ const Reserve = () => {
     }
 
     const FocusFloor = () => {
-        const room = [
-            {
-                profileID: "",
-                student1: {
-                    id: 1,
-                    name: "",
-                    surname: "",
-                    tel: "",
-                    nickname: ""
-                },
-            },
-        ]
 
         const oddRoom = modalFloor.filter((_item, key) => key % 2 !== 0)
         const evenRoom = modalFloor.filter((_item, key) => key % 2 === 0)
@@ -115,8 +123,8 @@ const Reserve = () => {
                 <div className="modal-content">
                     <div className="even-room">
                         {oddRoom.map((room, key) =>
-                            <div className="room-container">
-                                <span className="even-room-item" key={key}>
+                            <div className="room-container" key={key}>
+                                <span className="even-room-item" >
                                     <span className="student1">
                                         <img src="/icon/male.svg" alt="person" className="person" />
                                     </span>
@@ -131,8 +139,8 @@ const Reserve = () => {
                     <span className="space" >ทางเดิน</span>
                     <div className="odd-room">
                         {evenRoom.map((room, key) =>
-                            <div className="room-container">
-                                <span className="odd-room-item" key={key}>
+                            <div className="room-container" key={key}>
+                                <span className="odd-room-item">
                                     <span className="student1">
                                         <img src="/icon/male.svg" alt="person" className="person" />
                                     </span>
@@ -152,6 +160,7 @@ const Reserve = () => {
     useEffect(() => {
         handleSelectFloor(["A", "E"])
         setShowBuilding(["A", "E"])
+        // verifyLogingIn()
     }, [])
 
     return (
@@ -170,8 +179,8 @@ const Reserve = () => {
                 )}
             </div>
             <Building />
-            {showModal && <FocusFloor />}
-            <button onClick={()=>console.log(axiosConfig)}>log</button>
+            {showRoomSelect && <FocusFloor />}
+            <button onClick={() => console.log(axiosConfig)}>log</button>
         </div >
     )
 }

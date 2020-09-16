@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const requireJWTAuth = require("../configs/jwt")
+const { verifyHeader } = require("../configs/jwt")
 const firestore = require('../configs/firebase')
 
 const app = express()
@@ -10,7 +10,7 @@ const db = firestore.firestore()
 app.use(cors())
 app.use(router)
 
-router.get('/student/room/:floorId/', requireJWTAuth, async (req, res) => {
+router.get('/student/room/:floorId/', verifyHeader, async (req, res) => {
     try {
         const floorId = req.params.floorId;
         const checkRef = db.collection('dormitory').doc('status');
@@ -48,7 +48,7 @@ router.get('/student/room/:floorId/', requireJWTAuth, async (req, res) => {
 });
 
 
-router.post('/student/room/:floorId/:roomId/:studentId', requireJWTAuth, (req, res) => {
+router.post('/student/room/:floorId/:roomId/:studentId', verifyHeader, (req, res) => {
     try {
         let firstData = {
             student1: {
