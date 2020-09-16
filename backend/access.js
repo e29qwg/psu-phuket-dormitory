@@ -13,7 +13,7 @@ router.delete('/logout/:id', (req, res) => {
     const id = req.params.id
     const docRef = db.collection('token').doc(`${id}`)
     docRef.delete()
-    res.send("logout success");
+    res.status(200).send("logout success");
     res.redirect('/');
 });
 
@@ -24,77 +24,85 @@ router.post('/', (req, res) => {
             user.username = req.body.username
             user.password = req.body.password
             user.type = req.body.type
-
             client.GetUserDetails(user, async function (err, response) {
-                const responseData = {
+                try {
+                    
+                    const responseData = {
 
-                    userId: userUsecase.getStudentId(response),
-                    role: userUsecase.getRole(response)
-                }
-
-                if (user.type == responseData.role) {
-
-                    let oldToken = []
-                    const payload = {
-                        id: responseData.userId,
-                        type: responseData.role,
-                        exp: Date.now() + (1000 * 60 * 10)
+                        userId: userUsecase.getStudentId(response),
+                        role: userUsecase.getRole(response)
                     }
-                    let privateKey = fs.readFileSync('./configs/private.pem', 'utf8');
-                    let encoded = jwt.sign(payload, privateKey, { algorithm: 'HS256' });
-                    const docRef = db.collection('token');
-                    const snapshot = await docRef.where('id', '==', `${responseData.userId}`).get();
-                    if (snapshot.empty) {
-                        const register = docRef.doc(`${responseData.userId}`)
-                        await register.set({
-                            login: true,
-                            id: responseData.userId,
-                            type: responseData.role,
-                            token: encoded
-                        });
-                        res.status(200).send({
-                            login: true,
-                            id: responseData.userId,
-                            type: responseData.role,
-                            token: encoded
-                        })
+                    if (responseData.userId === null && responseData.role === null) {
+                        res.status(400).send("ID หรือ Password ผิด");
                     } else {
-                        snapshot.forEach(doc => {
-                            oldToken.push(doc.data())
-                        });
-                        oldToken.find(obj => {
-                            jwt.verify(obj.token, privateKey, { algorithm: "HS256" }, async (err, decoded) => {
-                                if (err) {
-                                    res.status(500).json({ error: "Not Authorized" });
-                                    throw new Error("Not Authorized");
-                                } else if (parseInt(decoded.exp) > Date.now()) {
-                                    res.status(200).send('you can logging in')
-                                } else {
-                                    const register = docRef.doc(`${responseData.userId}`)
-                                    await register.set({
-                                        login: true,
-                                        id: responseData.userId,
-                                        type: responseData.role,
-                                        token: encoded
+                        if (user.type == responseData.role) {
+    
+                            let oldToken = []
+                            const payload = {
+                                id: responseData.userId,
+                                type: responseData.role,
+                                exp: Date.now() + (1000 * 60 * 10)
+                            }
+                            let privateKey = fs.readFileSync('./configs/private.pem', 'utf8');
+                            let encoded = jwt.sign(payload, privateKey, { algorithm: 'HS256' });
+                            const docRef = db.collection('token');
+                            const snapshot = await docRef.where('id', '==', `${responseData.userId}`).get();
+                            if (snapshot.empty) {
+                                const register = docRef.doc(`${responseData.userId}`)
+                                await register.set({
+                                    login: true,
+                                    id: responseData.userId,
+                                    type: responseData.role,
+                                    token: encoded
+                                });
+                                res.status(201).send({
+                                    login: true,
+                                    id: responseData.userId,
+                                    type: responseData.role,
+                                    token: encoded
+                                })
+                            } else {
+                                snapshot.forEach(doc => {
+                                    oldToken.push(doc.data())
+                                });
+                                oldToken.find(obj => {
+                                    jwt.verify(obj.token, privateKey, { algorithm: "HS256" }, async (err, decoded) => {
+                                        if (err) {
+                                            res.status(500).json({ error: "Not Authorized" });
+                                            throw new Error("Not Authorized");
+                                        } else if (parseInt(decoded.exp) > Date.now()) {
+                                            res.status(204)
+                                        } else {
+                                            const register = docRef.doc(`${responseData.userId}`)
+                                            await register.set({
+                                                login: true,
+                                                id: responseData.userId,
+                                                type: responseData.role,
+                                                token: encoded
+                                            });
+                                            res.status(201).send({
+                                                login: true,
+                                                id: responseData.userId,
+                                                type: responseData.role,
+                                                token: encoded
+                                            })
+                                        }
                                     });
-                                    res.status(200).send({
-                                        login: true,
-                                        id: responseData.userId,
-                                        type: responseData.role,
-                                        token: encoded
-                                    })
-                                }
-                            });
-                        })
+                                })
+                            }
+                        }
+                        else {
+                            res.status(400).send(สถานะไม่ถูกต้อง)
+                        }
                     }
+                } catch (error) {
+                    res.sendStatus(501)
                 }
-                else {
-                    res.sendStatus(400)
-                }
+               
             });
         });
     } catch (error) {
-        res.send(error);
+        res.status(400).send(error);
     }
 
 })
