@@ -4,11 +4,11 @@ import { LoginState } from '../utils/context'
 import axios from 'axios'
 
 const NavigationBar = () => {
-    const { MenuBar, Token, Modal, AxiosConfig } = React.useContext(LoginState)
-    const [axiosConfig, setAxiosConfig] = AxiosConfig
+    const { MenuBar, Token, Modal, PreviousRoute } = React.useContext(LoginState)
     const [token, setToken] = Token
     const [showModal, setShowModal] = Modal
     const [menuBar, setMenuBar] = MenuBar
+    const [previousRoute, setPreviousRoute] = PreviousRoute
     const [hamburgerMenu, setHamburgermenu] = React.useState(false)
     const ref = React.useRef()
 
@@ -25,6 +25,7 @@ const NavigationBar = () => {
     }
 
     const handleRoute = (url) => {
+        setPreviousRoute(url)
         if (url === "Reserve" || url === "Profile") {
             if (token)
                 Router.push(url)
@@ -71,7 +72,7 @@ const NavigationBar = () => {
                     <span onClick={() => handleRoute('/')}>หน้าแรก</span>
                     <span onClick={() => handleRoute('Reserve')}>จองห้อง</span>
                     <span onClick={() => handleRoute('/')}>แจ้งซ่อม</span>
-                    <span onClick={() => handleRoute('/Profile')}>ข้อมูลส่วนตัว</span>
+                    <span onClick={() => handleRoute('Profile')}>ข้อมูลส่วนตัว</span>
                     <span onClick={handleLogin}>{menuBar}</span>
                 </div>
             }

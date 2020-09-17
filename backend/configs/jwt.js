@@ -7,7 +7,7 @@ const privateKey = fs.readFileSync('./configs/private.pem', 'utf8');
 
 const createToken = async (user, responseData, _req, res) => {
       const docRef = db.collection('token');
-      const haveToken = await docRef.where('id', '==', `${responseData.userId}`).get();
+      // const haveToken = await docRef.where('id', '==', `${responseData.userId}`).get();
       const payload = {
             id: responseData.userId,
             type: responseData.role,
@@ -31,6 +31,8 @@ const createToken = async (user, responseData, _req, res) => {
                         token: encoded
                   })
 
+                  console.log(`ID => ${payload.id} was Login`)
+
             } catch (e) {
                   console.error(e)
             }
@@ -41,49 +43,36 @@ const createToken = async (user, responseData, _req, res) => {
 }
 
 const verifyHeader = async (req, res, next) => {
-      if (req.headers.authorization) {
-            const tokenReceive = req.headers.authorization
-            const token = tokenReceive.slice(7)
-            const verifyHeaderToken = await tokenRef.where('token', '==', token).get()
-            let isExpToken = {}
-            const decode = jwt.decode(token, privateKey)
-            if (!verifyHeaderToken.empty) {
-                  verifyHeaderToken.forEach(result => isExpToken = { ...result.data() })
+      try {
+            if (req.headers.authorization) {
+                  const tokenReceive = req.headers.authorization
+                  const token = tokenReceive.slice(7)
+                  const verifyHeaderToken = await tokenRef.where('token', '==', token).get()
+                  let isExpToken = {}
+                  const decode = jwt.decode(token, privateKey)
+                  if (!verifyHeaderToken.empty) {
+                        await verifyHeaderToken.forEach(result => isExpToken = { ...result.data() })
+                  }
+                  if (isExpToken.token !== token) {
+                        console.log("Not authorization")
+                        res.status(401).send('Not authorization')
+                  }
+                  if (+decode.exp < Date.now()) {
+                        console.log("token expired")
+                        res.status(401).send('token expired')
+                  }
+                  else next()
+
             } else {
-                  res.status(401).send('Not authorization')
+                  console.log("Please Login")
+                  res.status(401).send('Please Login')
             }
-            if (decode.exp > Date.now()) {
-                  res.status(401).send('token expired')
-            }
-      } else {
-            res.status(401).send('Please Login')
+      } catch (e) {
+            console.error(e)
       }
-      // console.log(tokenReceive)
 }
 
 module.exports = {
       verifyHeader,
       createToken
 }
-// const privateKey = fs.readFileSync('./private.pem', 'utf8');
-// const path = require('path')
-// const key_dir = path.join(path.resolve(__dirname), './')
-// const public_key = fs.readFileSync(path.join(key_dir, 'private.pem'))
-// //ใช้ในการ decode jwt ออกมา
-// const ExtractJwt = require("passport-jwt").ExtractJwt
-// //ใช้ในการประกาศ Strategy
-// const JwtStrategy = require("passport-jwt").Strategy
-// // let privateKey = fs.readFileSync('./private.pem', 'utf8');
-// const SECRET = public_key
-// //สร้าง Strategy
-// const jwtOptions = {
-//       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-//       secretOrKey: SECRET,
-// }
-// const jwtAuth = new JwtStrategy(jwtOptions, (payload, done) => {
-//       done(null, true)
-// })
-// //เสียบ Strategy เข้า Passport
-// passport.use(jwtAuth)
-// //ทำ Passport Middleware
-// module.exports = passport.authenticate("jwt", { session: false })

@@ -11,8 +11,14 @@ const MyApp = ({ Component, pageProps }) => {
     const [showModal, setShowModal] = React.useState(false)
     const [axiosConfig, setAxiosConfig] = React.useState(null)
     const [menuBar, setMenubar] = React.useState('ลงชื่อเข้าใช้')
+    const [previousRoute, setPreviousRoute] = React.useState(null)
 
     React.useEffect(() => {
+
+        if (sessionStorage) {
+            setToken(JSON.parse(sessionStorage.getItem("token")))
+        }
+
         if (!token && sessionStorage.getItem('token')) {
             setAxiosConfig({
                 headers: {
@@ -28,7 +34,8 @@ const MyApp = ({ Component, pageProps }) => {
                 Token: [token, setToken],
                 Modal: [showModal, setShowModal],
                 AxiosConfig: [axiosConfig, setAxiosConfig],
-                MenuBar: [menuBar, setMenubar]
+                MenuBar: [menuBar, setMenubar],
+                PreviousRoute: [previousRoute, setPreviousRoute]
             }}>
             <div className="root-container">
                 <NavigationBar />

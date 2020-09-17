@@ -2,13 +2,13 @@ import React from 'react'
 import axios from 'axios'
 import qs from 'qs'
 
-const Index = () => {
+const Index = ({ result }) => {
 
     const [form, setForm] = React.useState({
         username: "",
         password: ""
     })
-    
+
     const handleForm = (event) => {
         setForm({
             ...form,
@@ -31,7 +31,7 @@ const Index = () => {
     }
 
     React.useEffect(() => {
-
+        console.log(result)
     }, [])
 
     return (
@@ -41,4 +41,8 @@ const Index = () => {
     )
 }
 
+Index.getInitialProps = async (ctx) => {
+
+    return { result: "Test" }
+}
 export default Index

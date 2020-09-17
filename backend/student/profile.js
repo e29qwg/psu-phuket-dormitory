@@ -1,8 +1,6 @@
 const express = require('express');
-const cors = require('cors');
 const firestore = require('../configs/firebase')
 const Multer = require('multer');
-const app = express()
 const router = express.Router()
 const db = firestore.firestore()
 const bucket = firestore.storage().bucket()
@@ -12,9 +10,6 @@ const multer = Multer({
     fileSize: 5 * 1024 * 1024
   }
 });
-
-app.use(cors())
-app.use(router)
 
 router.post('/student/profile/upload/:id', multer.single('img'), (req, res) => {
   // const id = req.params.id
