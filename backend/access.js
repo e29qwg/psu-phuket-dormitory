@@ -10,24 +10,24 @@ const firestore = require('./configs/firebase')
 const db = firestore.firestore()
 const { createToken } = require('./configs/jwt')
 
+
 //remove token
 router.delete('/logout/:token', async (req, res) => {
     const token = req.params.token
     const docRef = db.collection('token')
     const find = await docRef.where('token', "==", token).get()
     let deleteId = {}
-    
+
     try {
         if (!find.empty) {
             find.forEach(res => deleteId = { ...res.data() })
         }
         docRef.doc(deleteId.id).delete()
     } catch (e) {
-        console.log(e)
+        res.sendStatus(500)
     }
+})
 
-    res.status(200).send("logout success");
-});
 
 //create token
 router.post('/', (req, res) => {
@@ -37,20 +37,25 @@ router.post('/', (req, res) => {
             user.username = req.body.username
             user.password = req.body.password
             user.type = req.body.type
-
             client.GetUserDetails(user, async function (err, response) {
-                const responseData = {
+                try {
 
-                    userId: userUsecase.getStudentId(response),
-                    role: userUsecase.getRole(response)
+                    const responseData = {
+
+                        userId: userUsecase.getStudentId(response),
+                        role: userUsecase.getRole(response)
+                        
+                    }
+                    createToken(user, responseData, req, res)
+                } catch (error) {
+                    res.sendStatus(501)
                 }
-                createToken(user, responseData, req, res)
+                
             });
         });
     } catch (error) {
-        res.send(error);
+        res.status(400).send(error);
     }
 })
 
 module.exports = router;
-

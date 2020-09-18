@@ -1,46 +1,58 @@
 const express = require('express');
 const firestore = require('../configs/firebase')
-const Multer = require('multer');
+const multer = require('multer');
+const checkType = require('../configs/type')
+
 const router = express.Router()
 const db = firestore.firestore()
 const bucket = firestore.storage().bucket()
-const multer = Multer({
-  storage: Multer.memoryStorage(),
+const uploader = multer({
+  storage: multer.memoryStorage(),
   limits: {
     fileSize: 5 * 1024 * 1024
   }
 });
 
-router.post('/student/profile/upload/:id', multer.single('img'), (req, res) => {
-  // const id = req.params.id
+router.post('/student/profile/upload/:id' , checkType.studentType , uploader.single('img'), (req, res) => {
+  try {
+    const id = req.params.id
+    const fileName = `${Date.now()}_${req.file.originalname}`
+    const fileUpload = bucket.file(`profile/${id}/` + fileName);
+    const blobStream = fileUpload.createWriteStream({
+      metadata: {
+        contentType: req.file.mimetype
+      }
+    });
 
-  const fileName = `${Date.now()}_${req.file.originalname}`
-  const fileUpload = bucket.file(`profile/583555/` + fileName);
-  const blobStream = fileUpload.createWriteStream({
-    metadata: {
-      contentType: req.file.mimetype
-    }
-  });
+    blobStream.on('error', (err) => {
+      res.status(405).json(err);
+    });
 
-  blobStream.on('error', (err) => {
-    res.status(405).json(err);
-  });
+    blobStream.on('finish', () => {
+      res.status(200).send('Upload complete!');
+    });
 
-  blobStream.on('finish', () => {
-    res.status(200).send('Upload complete!');
-  });
+    blobStream.end(req.file.buffer);
+  } catch (error) {
+    res.sendStatus(400);
+  }
 
-  blobStream.end(req.file.buffer);
 });
 
-router.get('/student/profile/picture/:id', (req, res) => {
-  const file = bucket.file(`profile/${req.params.id}`);
-  file.download().then(downloadResponse => {
-    res.status(200).send(downloadResponse[0]);
-  });
+router.get('/student/profile/picture/:id' , checkType.studentType , (req, res) => {
+  try {
+
+    const file = bucket.file(`profile/${req.params.id}`);
+    file.download().then(downloadResponse => {
+      res.status(200).send(downloadResponse[0]);
+    });
+
+  } catch (error) {
+    res.sendStatus(400);
+  }
 });
 
-router.get('/student/profile/:studentId', async (req, res) => {
+router.get('/student/profile/:studentId', checkType.studentType , async (req, res) => {
   try {
     const studentId = req.params.studentId
     const docRef = db.collection('students').doc(`${studentId}`);
@@ -48,12 +60,11 @@ router.get('/student/profile/:studentId', async (req, res) => {
     res.status(200).send(profile.data());
   }
   catch (error) {
-    console.log(error)
+    res.sendStatus(400);
   }
 });
 
-
-router.post('/student/profile/:studentId', (req, res) => {
+router.post('/student/profile/:studentId',  checkType.studentType , (req, res) => {
   try {
     const user = {
       profile: {
@@ -149,7 +160,7 @@ router.post('/student/profile/:studentId', (req, res) => {
     docRef.set(user)
     res.status(200).send("add profile success");
   } catch (error) {
-    console.log(error)
+    res.sendStatus(400);
   }
 });
 

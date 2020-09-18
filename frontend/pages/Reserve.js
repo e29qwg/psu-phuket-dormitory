@@ -122,7 +122,7 @@ const Reserve = () => {
         }
 
         if (section === "r-17-24") {
-            let i = 17
+            let i = 16
             while (i < 24) {
                 temp.push(focusRoomList[1][i])
                 i++

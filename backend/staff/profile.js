@@ -1,19 +1,12 @@
 const express = require('express');
-const cors = require('cors');
-const requireJWTAuth = require("../configs/jwt")
 const firestore = require('../configs/firebase')
-// const storage = require('../configs/storage')
+const checkType = require('../configs/type')
 
-const app = express()
 const router = express.Router()
 const db = firestore.firestore()
-//const bocket = storage.storage().bucket()
+const bucket = firestore.storage().bucket()
 
-
-app.use(cors())
-app.use(router)
-
-router.get('/staff/profile/', requireJWTAuth, async (req, res) => {
+router.get('/staff/profile/', checkType.staffType, async (req, res) => {
     try {
         let studentList = []
         const docRef = db.collection('students')
@@ -29,8 +22,21 @@ router.get('/staff/profile/', requireJWTAuth, async (req, res) => {
         res.status(200).send(studentList);
     }
     catch (error) {
-        console.log(error)
+        res.sendStatus(500);
     }
 });
+
+router.get('/staff/profile/picture/:id' ,checkType.staffType,(req, res) => {
+    try {
+  
+      const file = bucket.file(`profile/${req.params.id}`);
+      file.download().then(downloadResponse => {
+        res.status(200).send(downloadResponse[0]);
+      });
+  
+    } catch (error) {
+      res.sendStatus(400);
+    }
+  });
 
 module.exports = router;

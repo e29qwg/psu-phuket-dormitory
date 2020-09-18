@@ -6,39 +6,39 @@ const db = firebase.firestore()
 const privateKey = fs.readFileSync('./configs/private.pem', 'utf8');
 
 const createToken = async (user, responseData, _req, res) => {
-      const docRef = db.collection('token');
-      // const haveToken = await docRef.where('id', '==', `${responseData.userId}`).get();
-      const payload = {
-            id: responseData.userId,
-            type: responseData.role,
-            exp: Date.now() + (1000 * 60 * 10)
-      }
 
-      if (user.type === responseData.role) {
+      if (responseData.userId === null && responseData.role === null) {
 
-            let encoded = jwt.sign(payload, privateKey, { algorithm: 'HS256' });
-            try {
+            res.status(401).send("ID หรือ Password ผิด");
+      } else {
+            if (user.type == responseData.role) {
+
+                  const payload = {
+                        id: responseData.userId,
+                        type: responseData.role,
+                        exp: Date.now() + (1000 * 60 * 10)
+                  }
+                  let encoded = jwt.sign(payload, privateKey, { algorithm: 'HS256' });
+                  const docRef = db.collection('token');
+                  const snapshot = await docRef.where('id', '==', `${responseData.userId}`).get();
 
                   const register = docRef.doc(`${responseData.userId}`)
                   await register.set({
+                        login: true,
                         id: responseData.userId,
                         type: responseData.role,
                         token: encoded
                   });
                   res.status(200).send({
+                        login: true,
                         id: responseData.userId,
                         type: responseData.role,
                         token: encoded
                   })
-
-                  console.log(`ID => ${payload.id} was Login`)
-
-            } catch (e) {
-                  console.error(e)
             }
-      }
-      else {
-            res.status(401).send('invalid id or password')
+            else {
+                  res.status(400).send(สถานะไม่ถูกต้อง)
+            }
       }
 }
 
@@ -68,7 +68,7 @@ const verifyHeader = async (req, res, next) => {
                   res.status(401).send('Please Login')
             }
       } catch (e) {
-            console.error(e)
+            res.sendStatus(400);
       }
 }
 

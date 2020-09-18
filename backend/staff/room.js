@@ -1,11 +1,11 @@
 const express = require('express');
-const cors = require('cors');
-const requireJWTAuth = require("../configs/jwt")
 const firestore = require('../configs/firebase')
+const checkType = require('../configs/type')
+
 const router = express.Router()
 const db = firestore.firestore()
 
-router.post('/staff/room/', requireJWTAuth, (req, res) => {
+router.post('/staff/room/', checkType.staffType, (req, res) => {
       try {
             const statusDormitory = {
                   system: req.body.system,
@@ -16,11 +16,11 @@ router.post('/staff/room/', requireJWTAuth, (req, res) => {
             res.status(200).send("change status");
 
       } catch (error) {
-            console.log(error)
+            res.sendStatus(400)
       }
 });
 
-router.get('/staff/room/:floorId/', requireJWTAuth, async (req, res) => {
+router.get('/staff/room/:floorId/', checkType.staffType, async (req, res) => {
       try {
             const floorId = req.params.floorId;
             const docRef = db.collection(`${floorId}`);
@@ -41,11 +41,11 @@ router.get('/staff/room/:floorId/', requireJWTAuth, async (req, res) => {
             res.status(200).send(result);
 
       } catch (error) {
-            console.log(error)
+            res.sendStatus(400)
       }
 })
 
-router.post('/staff/room/:floorId/:roomId', requireJWTAuth, async (req, res) => {
+router.post('/staff/room/:floorId/:roomId', checkType.staffType, async (req, res) => {
       try {
             const statusRoom = {
                   roomStatus: req.body.roomStatus
@@ -58,11 +58,11 @@ router.post('/staff/room/:floorId/:roomId', requireJWTAuth, async (req, res) => 
             res.status(200).send("change status");
 
       } catch (error) {
-            console.log(error)
+            res.sendStatus(400)
       }
 });
 
-router.delete('/staff/room/:floorId/:roomId/:studentId', requireJWTAuth, (req, res) => {
+router.delete('/staff/room/:floorId/:roomId/:studentId' , checkType.staffType, (req, res) => {
       try {
             const floorId = req.params.floorId;
             const roomId = req.params.roomId;
@@ -84,11 +84,11 @@ router.delete('/staff/room/:floorId/:roomId/:studentId', requireJWTAuth, (req, r
                   res.status(200).send("delete student2 success");
             }
             else {
-                  res.status(200).send("delete failed");
+                  res.status(400).send("delete failed");
             }
       }
       catch (error) {
-            console.log(error)
+            res.sendStatus(400)
       }
 });
 

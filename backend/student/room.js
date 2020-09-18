@@ -1,10 +1,13 @@
 const express = require('express');
 const { verifyHeader } = require("../configs/jwt")
 const firestore = require('../configs/firebase')
+const checkType = require('../configs/type')
+
 const router = express.Router()
 const db = firestore.firestore()
 
-router.get('/student/room/:floorId/', async (req, res) => {
+
+router.get('/student/room/:floorId/',checkType.studentType, async (req, res) => {
     try {
         const floorId = req.params.floorId;
         const checkRef = db.collection('dormitory').doc('status');
@@ -32,17 +35,17 @@ router.get('/student/room/:floorId/', async (req, res) => {
                 statusAllroom: checkAllroom
             });
         } else {
-            res.send("ระบบยังไม่เปิดจอง");;
+            res.status().send("ระบบยังไม่เปิดจอง");;
         }
 
     } catch (error) {
-        console.log(error)
+        res.sendStatus(400);
     }
 
 });
 
 
-router.post('/student/room/:floorId/:roomId/:studentId', (req, res) => {
+router.post('/student/room/:floorId/:roomId/:studentId' ,checkType.studentType,(req, res) => {
     try {
         let firstData = {
             student1: {
@@ -90,10 +93,10 @@ router.post('/student/room/:floorId/:roomId/:studentId', (req, res) => {
             res.status(200).send("booking student2 success");
         }
         else {
-            res.status(200).send("booking failed");
+            res.status(400).send("booking failed");
         }
     } catch (error) {
-        console.log(error)
+        res.sendStatus(400);
     }
 
 });

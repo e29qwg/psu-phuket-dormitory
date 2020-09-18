@@ -1,5 +1,4 @@
 node_modules
 /configs/private.pem
 /configs/serviceAccountKey.json
-//asdaw
-debug.log
+
