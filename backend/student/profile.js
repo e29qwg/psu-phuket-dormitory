@@ -1,10 +1,8 @@
 const express = require('express');
-const cors = require('cors');
 const firestore = require('../configs/firebase')
 const multer = require('multer');
 const checkType = require('../configs/type')
 
-const app = express()
 const router = express.Router()
 const db = firestore.firestore()
 const bucket = firestore.storage().bucket()
@@ -15,10 +13,7 @@ const uploader = multer({
   }
 });
 
-app.use(cors())
-app.use(router)
-
-router.post('/student/profile/upload/:id', requireJWTAuth , checkType.studentType , uploader.single('img'), (req, res) => {
+router.post('/student/profile/upload/:id' , checkType.studentType , uploader.single('img'), (req, res) => {
   try {
     const id = req.params.id
     const fileName = `${Date.now()}_${req.file.originalname}`
@@ -44,7 +39,7 @@ router.post('/student/profile/upload/:id', requireJWTAuth , checkType.studentTyp
 
 });
 
-router.get('/student/profile/picture/:id', requireJWTAuth , checkType.studentType , (req, res) => {
+router.get('/student/profile/picture/:id' , checkType.studentType , (req, res) => {
   try {
 
     const file = bucket.file(`profile/${req.params.id}`);
@@ -57,7 +52,7 @@ router.get('/student/profile/picture/:id', requireJWTAuth , checkType.studentTyp
   }
 });
 
-router.get('/student/profile/:studentId', requireJWTAuth, checkType.studentType , async (req, res) => {
+router.get('/student/profile/:studentId', checkType.studentType , async (req, res) => {
   try {
     const studentId = req.params.studentId
     const docRef = db.collection('students').doc(`${studentId}`);
@@ -69,26 +64,7 @@ router.get('/student/profile/:studentId', requireJWTAuth, checkType.studentType 
   }
 });
 
-router.get('/student/profile/picture/:id', (req, res) => {
-  const file = bucket.file(`profile/${req.params.id}`);
-  file.download().then(downloadResponse => {
-    res.status(200).send(downloadResponse[0]);
-  });
-});
-
-router.get('/student/profile/:studentId', async (req, res) => {
-  try {
-    const studentId = req.params.studentId
-    const docRef = db.collection('students').doc(`${studentId}`);
-    const profile = await docRef.get();
-    res.status(200).send(profile.data());
-  }
-  catch (error) {
-    console.log(error)
-  }
-});
-
-router.post('/student/profile/:studentId', requireJWTAuth, checkType.studentType , (req, res) => {
+router.post('/student/profile/:studentId',  checkType.studentType , (req, res) => {
   try {
     const user = {
       profile: {
@@ -182,7 +158,7 @@ router.post('/student/profile/:studentId', requireJWTAuth, checkType.studentType
     const studentId = req.params.studentId;
     const docRef = db.collection('students').doc(`${studentId}`)
     docRef.set(user)
-    res.status(201).send("add profile success");
+    res.status(200).send("add profile success");
   } catch (error) {
     res.sendStatus(400);
   }

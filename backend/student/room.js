@@ -1,21 +1,13 @@
 const express = require('express');
-const cors = require('cors');
 const { verifyHeader } = require("../configs/jwt")
 const firestore = require('../configs/firebase')
 const checkType = require('../configs/type')
 
-const app = express()
 const router = express.Router()
 const db = firestore.firestore()
 
-app.use(cors())
-app.use(router)
 
-<<<<<<< HEAD
-router.get('/student/room/:floorId/', requireJWTAuth, checkType.studentType , async (req, res) => {
-=======
-router.get('/student/room/:floorId/', verifyHeader, async (req, res) => {
->>>>>>> 7a3aac39809d9ff66a9c03318cbee912cfa120fb
+router.get('/student/room/:floorId/',checkType.studentType, async (req, res) => {
     try {
         const floorId = req.params.floorId;
         const checkRef = db.collection('dormitory').doc('status');
@@ -53,11 +45,7 @@ router.get('/student/room/:floorId/', verifyHeader, async (req, res) => {
 });
 
 
-<<<<<<< HEAD
-router.post('/student/room/:floorId/:roomId/:studentId', requireJWTAuth, checkType.studentType , (req, res) => {
-=======
-router.post('/student/room/:floorId/:roomId/:studentId', verifyHeader, (req, res) => {
->>>>>>> 7a3aac39809d9ff66a9c03318cbee912cfa120fb
+router.post('/student/room/:floorId/:roomId/:studentId' ,checkType.studentType,(req, res) => {
     try {
         let firstData = {
             student1: {

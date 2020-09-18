@@ -1,14 +1,11 @@
 const express = require('express');
-const cors = require('cors');
-const requireJWTAuth = require("../configs/jwt")
 const firestore = require('../configs/firebase')
 const checkType = require('../configs/type')
 
-const app = express()
 const router = express.Router()
 const db = firestore.firestore()
 
-router.post('/staff/room/', requireJWTAuth, checkType.staffType, (req, res) => {
+router.post('/staff/room/', checkType.staffType, (req, res) => {
       try {
             const statusDormitory = {
                   system: req.body.system,
@@ -23,7 +20,7 @@ router.post('/staff/room/', requireJWTAuth, checkType.staffType, (req, res) => {
       }
 });
 
-router.get('/staff/room/:floorId/', requireJWTAuth, checkType.staffType, async (req, res) => {
+router.get('/staff/room/:floorId/', checkType.staffType, async (req, res) => {
       try {
             const floorId = req.params.floorId;
             const docRef = db.collection(`${floorId}`);
@@ -48,7 +45,7 @@ router.get('/staff/room/:floorId/', requireJWTAuth, checkType.staffType, async (
       }
 })
 
-router.post('/staff/room/:floorId/:roomId', requireJWTAuth, checkType.staffType, async (req, res) => {
+router.post('/staff/room/:floorId/:roomId', checkType.staffType, async (req, res) => {
       try {
             const statusRoom = {
                   roomStatus: req.body.roomStatus
@@ -65,7 +62,7 @@ router.post('/staff/room/:floorId/:roomId', requireJWTAuth, checkType.staffType,
       }
 });
 
-router.delete('/staff/room/:floorId/:roomId/:studentId', requireJWTAuth , checkType.staffType, (req, res) => {
+router.delete('/staff/room/:floorId/:roomId/:studentId' , checkType.staffType, (req, res) => {
       try {
             const floorId = req.params.floorId;
             const roomId = req.params.roomId;

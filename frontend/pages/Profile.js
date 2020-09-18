@@ -2,10 +2,12 @@ import React from 'react'
 import { LoginState } from '../utils/context'
 import axios from 'axios'
 
+
 const Profile = () => {
 
-    const { AxiosConfig } = React.useContext(LoginState)
+    const { AxiosConfig, Token } = React.useContext(LoginState)
     const [axiosConfig] = AxiosConfig
+    const [token] = Token
     const [section, setSection] = React.useState(1)
     const [form, setForm] = React.useState({
         profile: {
@@ -198,31 +200,61 @@ const Profile = () => {
     }
 
     const handleSubmit = (e) => {
+        const { id } = JSON.parse(sessionStorage.getItem('token'))
+
         try {
-            axios.post('', form, axiosConfig).then(res => {
+            axios.post(`http://localhost/student/profile/${id}`, form, axiosConfig).then(res => {
                 if (res.status === 200) {
                     console.log("Submit success")
                 }
             })
         } catch (e) {
-            console.log(e)
+            console.error(e)
+            Logout()
         }
     }
+    const Logout = () => {
+        setToken(null)
+        sessionStorage.removeItem('token')
+        setShowModal(false)
+        setMenuBar('ลงชื่อเข้าใช้')
+        Router.push('Login')
+    }
+
+    const getHeader = () => {
+        if (sessionStorage.getItem('token')) setToken(JSON.parse(sessionStorage.getItem('token')))
+        else Logout()
+    }
+
+    const verifyLogin = () => {
+        const session = sessionStorage.getItem("token")
+        if (!session) {
+            sessionStorage.removeItem('token')
+            setToken(null)
+            setShowModal(false)
+            setMenuBar('ลงชื่อเข้าใช้')
+            Router.push('Login')
+        }
+    }
+
+    React.useEffect(() => {
+        verifyLogin()
+    }, [])
 
     const ProfileForm = () => {
         return <div>
             <label>Profile</label>
-            <input name="id" onChange={handleFormProfile} />
-            <input name="name" onChange={handleFormProfile} />
-            <input name="surname" onChange={handleFormProfile} />
-            <input name="nickname" onChange={handleFormProfile} />
-            <input name="religion" onChange={handleFormProfile} />
-            <input name="race" onChange={handleFormProfile} />
-            <input name="nationality" onChange={handleFormProfile} />
-            <input name="birthday" onChange={handleFormProfile} />
-            <input name="faculty" onChange={handleFormProfile} />
-            <input name="department" onChange={handleFormProfile} />
-            <input name="line" onChange={handleFormProfile} />
+            <input value={form.profile.id} name="id" onChange={handleFormProfile} />
+            <input value={form.profile.name} name="name" onChange={handleFormProfile} />
+            <input value={form.profile.surname} name="surname" onChange={handleFormProfile} />
+            <input value={form.profile.nickname} name="nickname" onChange={handleFormProfile} />
+            <input value={form.profile.religion} name="religion" onChange={handleFormProfile} />
+            <input value={form.profile.race} name="race" onChange={handleFormProfile} />
+            <input value={form.profile.nationality} name="nationality" onChange={handleFormProfile} />
+            <input value={form.profile.birthday} name="birthday" onChange={handleFormProfile} />
+            <input value={form.profile.faculty} name="faculty" onChange={handleFormProfile} />
+            <input value={form.profile.department} name="department" onChange={handleFormProfile} />
+            <input value={form.profile.line} name="line" onChange={handleFormProfile} />
             <button onClick={() => setSection(prev => prev + 1)}>Next</button>
         </div>
     }
@@ -263,6 +295,7 @@ const Profile = () => {
             <button onClick={() => setSection(prev => prev + 1)}>Next</button>
         </div>
     }
+
     const Friend = () => {
         return <div>
             <label>Friends</label>
@@ -327,13 +360,13 @@ const Profile = () => {
 
     return (
         <div className="profile-container">
-            <div className="profile-form">{section === 1 ? <ProfileForm /> : ""}</div>
-            <div className="profile-form">{section === 2 ? <Contact /> : ""}</div>
-            <div className="profile-form">{section === 3 ? <Information /> : ""}</div>
-            <div className="profile-form">{section === 4 ? <Friend /> : ""}</div>
-            <div className="profile-form">{section === 5 ? <Family /> : ""}</div>
-            <div className="profile-form">{section === 6 ? <Other /> : ""}</div>
-            {/* <button onClick={() => console.log(form)}>log form</button> */}
+            <div className="profile-form">{section === 1 ? ProfileForm() : ""}</div>
+            <div className="profile-form">{section === 2 ? Contact() : ""}</div>
+            <div className="profile-form">{section === 3 ? Information() : ""}</div>
+            <div className="profile-form">{section === 4 ? Friend() : ""}</div>
+            <div className="profile-form">{section === 5 ? Family() : ""}</div>
+            <div className="profile-form">{section === 6 ? Other() : ""}</div>
+            <button onClick={() => console.log(form)}>log form</button>
         </div>
     )
 }

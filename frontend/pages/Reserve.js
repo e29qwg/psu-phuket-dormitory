@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react'
 import axios from 'axios'
 import { LoginState } from '../utils/context'
+import Router from 'next/router'
+import Loading from '../component/Loading'
 
 const Reserve = () => {
 
-    const { Modal, Token, AxiosConfig } = useContext(LoginState)
+    const { Modal, Token, AxiosConfig, MenuBar } = useContext(LoginState)
+    const [menuBar, setMenuBar] = MenuBar
     const [axiosConfig] = AxiosConfig
     const [token, setToken] = Token
     const [showModal, setShowModal] = Modal
     const [showRoomSelect, setShowRoomSelect] = React.useState(false)
+    const [isLoading, setIsLoading] = React.useState(false)
 
     const floorList = [
         { 1: ["A", "E"] },
@@ -21,7 +25,7 @@ const Reserve = () => {
     const [showbuilding, setShowBuilding] = useState([])
     const [modalFloor, setModalFloor] = useState([
         {
-            profileID: "",
+            profileId: null,
             student1: {
                 id: 1,
                 name: "",
@@ -32,26 +36,57 @@ const Reserve = () => {
         },
     ])
 
-    const verifyLogingIn = () => {
-        if (!token) {
-            setToken(sessionStorage.getItem('token'))
-        } setShowModal(true)
+
+    const Logout = () => {
+        console.log("Logout")
+        setToken(null)
+        sessionStorage.removeItem('token')
+        setShowModal(false)
+        setMenuBar('ลงชื่อเข้าใช้')
+        Router.push('Login')
+    }
+
+    const getHeader = () => {
+        if (sessionStorage.getItem('token')) setToken(JSON.parse(sessionStorage.getItem('token')))
+        else Logout()
+    }
+
+    const verifyLogin = () => {
+        const session = sessionStorage.getItem("token")
+        if (!session) {
+            sessionStorage.removeItem('token')
+            setToken(null)
+            setShowModal(false)
+            setMenuBar('ลงชื่อเข้าใช้')
+            Router.push('Login')
+        }
     }
 
     const handleSelectFloor = async floor => {
         setShowBuilding(floor)
         let floorDetails = []
+        setIsLoading(false)
         try {
-            const roomList = await axios.get(`http://localhost/student/room/floor${floor[0]}`, axiosConfig)
-            floorDetails[0] = { ...roomList.data.result }
 
+            const roomList = await axios.get(`http://localhost/student/room/floor${floor[0]}`, axiosConfig)
+                .catch(e => {
+                    console.log(e.response.data)
+                    Logout()
+                })
+            floorDetails[0] = { ...roomList.data.result }
             const roomList2 = await axios.get(`http://localhost/student/room/floor${floor[1]}`, axiosConfig)
+                .catch(e => {
+                    console.log(e.response.data)
+                    Logout()
+                })
             floorDetails[1] = { ...roomList2.data.result }
 
             setFocusListRoom(floorDetails)
+            setIsLoading(true)
         }
         catch (e) {
             console.error(e)
+            // Logout()
         }
     }
 
@@ -87,7 +122,7 @@ const Reserve = () => {
         }
 
         if (section === "r-17-24") {
-            let i = 17
+            let i = 16
             while (i < 24) {
                 temp.push(focusRoomList[1][i])
                 i++
@@ -101,7 +136,13 @@ const Reserve = () => {
     const Building = () => {
         const left = showbuilding[0]
         const right = showbuilding[1]
-        return (
+        if (!isLoading)
+            return (
+                <div className="Loading">
+                    <Loading />
+                </div>
+            )
+        else return (
             <div className="building-container">
                 <div className="left" onClick={() => handleModalFloor("l-1-16")}>{left}01 - {left}16</div>
                 <div className="sleft" onClick={() => handleModalFloor("l-17-24")}>{left}17 - {left}24</div>
@@ -158,9 +199,18 @@ const Reserve = () => {
     }
 
     useEffect(() => {
-        handleSelectFloor(["A", "E"])
+        getHeader()
         setShowBuilding(["A", "E"])
-        // verifyLogingIn()
+        verifyLogin()
+        if (token) {
+            handleSelectFloor(["A", "E"])
+        }
+        return () => {
+            setShowBuilding(["A", "E"])
+            if (token) {
+                handleSelectFloor(["A", "E"])
+            }
+        }
     }, [])
 
     return (
@@ -180,8 +230,10 @@ const Reserve = () => {
             </div>
             <Building />
             {showRoomSelect && <FocusFloor />}
+            <button onClick={() => console.log(axiosConfig)}>AxiosConf</button>
+            <button onClick={() => console.log(focusRoomList)}>LogRoom</button>
             <button onClick={() => console.log(axiosConfig)}>log</button>
-        </div >
+        </div>
     )
 }
 export default Reserve

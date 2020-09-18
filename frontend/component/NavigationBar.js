@@ -4,11 +4,11 @@ import { LoginState } from '../utils/context'
 import axios from 'axios'
 
 const NavigationBar = () => {
-    const { MenuBar, Token, Modal, AxiosConfig } = React.useContext(LoginState)
-    const [axiosConfig, setAxiosConfig] = AxiosConfig
+    const { MenuBar, Token, Modal, PreviousRoute } = React.useContext(LoginState)
     const [token, setToken] = Token
     const [showModal, setShowModal] = Modal
     const [menuBar, setMenuBar] = MenuBar
+    const [previousRoute, setPreviousRoute] = PreviousRoute
     const [hamburgerMenu, setHamburgermenu] = React.useState(false)
     const ref = React.useRef()
 
@@ -25,8 +25,10 @@ const NavigationBar = () => {
     }
 
     const handleRoute = (url) => {
+        const session = sessionStorage.getItem('token')
         if (url === "Reserve" || url === "Profile") {
-            if (token)
+            setPreviousRoute(url)
+            if (session)
                 Router.push(url)
             else {
                 Router.push("Login")
@@ -38,20 +40,22 @@ const NavigationBar = () => {
     const handleLogin = () => {
         if (menuBar === "ลงชื่อเข้าใช้") setShowModal(true)
         if (menuBar === "ออกจากระบบ") {
-            const tempToken = token ? token.token : sessionStorage ? sessionStorage.getItem("token") : ""
+            const { token } = JSON.parse(sessionStorage.getItem("token"))
             setToken(null)
             sessionStorage.removeItem('token')
             setMenuBar('ลงชื่อเข้าใช้')
             try {
-                axios.delete(`http://localhost/logout/${tempToken}`)
+                axios.delete(`http://localhost/logout/${token}`)
             } catch (e) {
                 console.error(e)
             }
+            Router.push('/')
         }
     }
 
     const LoginOrLogout = () => {
-        if (token || sessionStorage.getItem('token')) setMenuBar('ออกจากระบบ')
+        const session = sessionStorage.getItem('token')
+        if (session) setMenuBar('ออกจากระบบ')
         else setMenuBar('ลงชื่อเข้าใช้')
     }
 
@@ -71,7 +75,7 @@ const NavigationBar = () => {
                     <span onClick={() => handleRoute('/')}>หน้าแรก</span>
                     <span onClick={() => handleRoute('Reserve')}>จองห้อง</span>
                     <span onClick={() => handleRoute('/')}>แจ้งซ่อม</span>
-                    <span onClick={() => handleRoute('/Profile')}>ข้อมูลส่วนตัว</span>
+                    <span onClick={() => handleRoute('Profile')}>ข้อมูลส่วนตัว</span>
                     <span onClick={handleLogin}>{menuBar}</span>
                 </div>
             }
