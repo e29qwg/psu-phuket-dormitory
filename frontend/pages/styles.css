@@ -19,7 +19,7 @@
     display: none;
     flex-direction: column;
     justify-content: space-around;
-    background-color: #FFF;
+    background-color: #10529E;
     align-items: center;
     color: #000;
 }
@@ -38,9 +38,9 @@ div.hamburger-container {
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-        background: #FFF;
+        background: #10529E;
         align-items: center;
-        color: #000;
+        color: #FFF;
         padding: 5px 0 5px 0;
     }
 }
@@ -125,6 +125,7 @@ img.hamburger {
     grid-column: span 12;
     grid-row: span 2;
     opacity: .7;
+    background: #0FE2F7;
 }
 
 @media screen and (max-width:500px) {
@@ -134,6 +135,7 @@ img.hamburger {
         grid-column: span 12;
         grid-row: span 2;
         opacity: .7;
+        background: #0FE2F7;
     }
 }
 
