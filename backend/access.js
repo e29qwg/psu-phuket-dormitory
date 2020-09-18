@@ -8,6 +8,24 @@ const url = 'https://passport.psu.ac.th/authentication/authentication.asmx?wsdl'
 const router = express.Router()
 const firestore = require('./configs/firebase')
 const db = firestore.firestore()
+const { createToken } = require('./configs/jwt')
+
+
+//remove token
+router.delete('/logout/:token', async (req, res) => {
+    const token = req.params.token
+    const docRef = db.collection('token')
+    const find = await docRef.where('token', "==", token).get()
+    let deleteId = {}
+    
+    try {
+        if (!find.empty) {
+            find.forEach(res => deleteId = { ...res.data() })
+        }
+        docRef.doc(deleteId.id).delete()
+    } catch (e) {
+        console.log(e)
+    }
 
 router.delete('/logout/:id', (req, res) => {
     const id = req.params.id
@@ -17,6 +35,7 @@ router.delete('/logout/:id', (req, res) => {
     res.redirect('/');
 });
 
+//create token
 router.post('/', (req, res) => {
     try {
         soap.createClient(url, (err, client) => {
@@ -104,8 +123,6 @@ router.post('/', (req, res) => {
     } catch (error) {
         res.status(400).send(error);
     }
-
 })
 
 module.exports = router;
-

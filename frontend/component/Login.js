@@ -4,9 +4,10 @@ import qs from 'qs'
 import { LoginState } from '../utils/context'
 
 const Login = ({ children }) => {
-    const { Token, Modal } = React.useContext(LoginState)
+    const { MenuBar, Token, Modal } = React.useContext(LoginState)
     const [token, setToken] = Token
     const [showModal, setShowModal] = Modal
+    const [menuBar, setMenuBar] = MenuBar
 
     const [form, setForm] = React.useState({
         username: "",
@@ -28,22 +29,23 @@ const Login = ({ children }) => {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             })
-            // const result = await axios.post('http://localhost', { username: "5835512119", password: "Ff_0813780670" })
-            // setResponse(result.data)
             if (result.status === 200 && result.data.token) {
+                sessionStorage.setItem('token', JSON.stringify(result.data))
                 setShowModal(false)
                 setToken(result.data)
-                sessionStorage.setItem('token', JSON.stringify(result.data))
-                // console.log("Token receive => " + result.data.token)
+                setMenuBar('ออกจากระบบ')
             }
-            if (result.status === 200) {
-                setShowModal(false)
-                // console.log("Loging in")
-                if (sessionStorage) setToken(JSON.parse(sessionStorage.getItem('token')))
-            }
+            // if (result.status === 200) {
+            //     axios.post('http://localhost', qs.stringify(form), {
+            //         headers: {
+            //             'Content-Type': 'application/x-www-form-urlencoded'
+            //         }
+            //     })
+            //     setShowModal(false)
+            //     if (sessionStorage) setToken(JSON.parse(sessionStorage.getItem('token')))
+            // }
             else if (result.status === 401) {
                 setToken(null)
-                // console.log('Destroyed Token')
             }
         } catch (e) {
             console.log(e)

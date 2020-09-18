@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const requireJWTAuth = require('../configs/jwt')
 const firestore = require('../configs/firebase')
 const multer = require('multer');
 const checkType = require('../configs/type')
@@ -70,6 +69,24 @@ router.get('/student/profile/:studentId', requireJWTAuth, checkType.studentType 
   }
 });
 
+router.get('/student/profile/picture/:id', (req, res) => {
+  const file = bucket.file(`profile/${req.params.id}`);
+  file.download().then(downloadResponse => {
+    res.status(200).send(downloadResponse[0]);
+  });
+});
+
+router.get('/student/profile/:studentId', async (req, res) => {
+  try {
+    const studentId = req.params.studentId
+    const docRef = db.collection('students').doc(`${studentId}`);
+    const profile = await docRef.get();
+    res.status(200).send(profile.data());
+  }
+  catch (error) {
+    console.log(error)
+  }
+});
 
 router.post('/student/profile/:studentId', requireJWTAuth, checkType.studentType , (req, res) => {
   try {

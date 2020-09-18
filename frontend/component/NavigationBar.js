@@ -4,10 +4,11 @@ import { LoginState } from '../utils/context'
 import axios from 'axios'
 
 const NavigationBar = () => {
-    const { Token, Modal, AxiosConfig } = React.useContext(LoginState)
+    const { MenuBar, Token, Modal, AxiosConfig } = React.useContext(LoginState)
     const [axiosConfig, setAxiosConfig] = AxiosConfig
     const [token, setToken] = Token
     const [showModal, setShowModal] = Modal
+    const [menuBar, setMenuBar] = MenuBar
     const [hamburgerMenu, setHamburgermenu] = React.useState(false)
     const ref = React.useRef()
 
@@ -24,16 +25,25 @@ const NavigationBar = () => {
     }
 
     const handleRoute = (url) => {
-        Router.push(url)
+        if (url === "Reserve" || url === "Profile") {
+            if (token)
+                Router.push(url)
+            else {
+                Router.push("Login")
+            }
+        }
+        else Router.push(url)
     }
 
     const handleLogin = () => {
-        if (LoginOrLogout() === "ลงชื่อเข้าใช้") setShowModal(true)
-        if (LoginOrLogout() === "ออกจากระบบ") {
+        if (menuBar === "ลงชื่อเข้าใช้") setShowModal(true)
+        if (menuBar === "ออกจากระบบ") {
+            const tempToken = token ? token.token : sessionStorage ? sessionStorage.getItem("token") : ""
             setToken(null)
-            localStorage ? localStorage.removeItem('token') : ""
+            sessionStorage.removeItem('token')
+            setMenuBar('ลงชื่อเข้าใช้')
             try {
-                axios.delete(`http://localhost/logout/${token.token}`)
+                axios.delete(`http://localhost/logout/${tempToken}`)
             } catch (e) {
                 console.error(e)
             }
@@ -41,17 +51,12 @@ const NavigationBar = () => {
     }
 
     const LoginOrLogout = () => {
-        if (token === null) return "ลงชื่อเข้าใช้"
-        else return "ออกจากระบบ"
+        if (token || sessionStorage.getItem('token')) setMenuBar('ออกจากระบบ')
+        else setMenuBar('ลงชื่อเข้าใช้')
     }
 
     React.useEffect(() => {
-        if (sessionStorage.getItem("token"))
-            setAxiosConfig({
-                headers: {
-                    Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("token")).token}`
-                }
-            })
+        LoginOrLogout()
     }, [])
 
     return (
@@ -67,7 +72,7 @@ const NavigationBar = () => {
                     <span onClick={() => handleRoute('Reserve')}>จองห้อง</span>
                     <span onClick={() => handleRoute('/')}>แจ้งซ่อม</span>
                     <span onClick={() => handleRoute('/Profile')}>ข้อมูลส่วนตัว</span>
-                    <span onClick={handleLogin}>{LoginOrLogout()}</span>
+                    <span onClick={handleLogin}>{menuBar}</span>
                 </div>
             }
         </div>

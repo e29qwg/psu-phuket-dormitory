@@ -10,16 +10,16 @@ const MyApp = ({ Component, pageProps }) => {
     const [token, setToken] = React.useState(null)
     const [showModal, setShowModal] = React.useState(false)
     const [axiosConfig, setAxiosConfig] = React.useState(null)
+    const [menuBar, setMenubar] = React.useState('ลงชื่อเข้าใช้')
 
     React.useEffect(() => {
-        // localStorage ? setAxiosConfig({
-        //     headers: {
-        //         Authorization: `Bearer ${JSON.parse(localStorage.getItem("token")).token}`
-        //     }
-        // }) : ""
-        // if (token) {
-        //     setAxiosConfig({ headers: { authorization: `Bearer ${token.token}` } })
-        // }
+        if (!token && sessionStorage.getItem('token')) {
+            setAxiosConfig({
+                headers: {
+                    authorization: `Bearer ${JSON.parse(sessionStorage.getItem("token")).token}`
+                }
+            })
+        }
     }, [])
 
     return (
@@ -27,7 +27,8 @@ const MyApp = ({ Component, pageProps }) => {
             value={{
                 Token: [token, setToken],
                 Modal: [showModal, setShowModal],
-                AxiosConfig: [axiosConfig, setAxiosConfig]
+                AxiosConfig: [axiosConfig, setAxiosConfig],
+                MenuBar: [menuBar, setMenubar]
             }}>
             <div className="root-container">
                 <NavigationBar />
