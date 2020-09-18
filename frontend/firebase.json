@@ -1,0 +1,23 @@
+{
+  "hosting": {
+    "public": "out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      ".gitignore",
+      "component",
+      "pages",
+      "utils",
+      "yarn.lock",
+      "index.js",
+      ".next"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

@@ -46,7 +46,9 @@ const Login = () => {
             }
             else if (result.status === 401) {
                 setToken(null)
-            }
+                // sessionStorage.removeItem("token")
+                // setMenuBar('ลงชื่อเข้าใช้')
+        }
         } catch (e) {
             console.log(e)
         }
@@ -59,6 +61,8 @@ const Login = () => {
     }
 
     React.useEffect(() => {
+        setMenuBar("ลงชื่อเข้าใช้")
+        setShowModal(false)
     }, [])
 
     return (

@@ -59,7 +59,7 @@ const verifyHeader = async (req, res, next) => {
                   }
                   if (+decode.exp < Date.now()) {
                         console.log("token expired")
-                        res.status(401).send('token expired')
+                        res.status(401).send('Token expired')
                   }
                   else next()
 

@@ -5,28 +5,12 @@ import Footer from '../component/Footer'
 import { LoginState } from '../utils/context'
 import LoginModal from '../component/Login'
 
-// This default export is required in a new `pages/_app.js` file.
 const MyApp = ({ Component, pageProps }) => {
     const [token, setToken] = React.useState(null)
     const [showModal, setShowModal] = React.useState(false)
     const [axiosConfig, setAxiosConfig] = React.useState(null)
     const [menuBar, setMenubar] = React.useState('ลงชื่อเข้าใช้')
     const [previousRoute, setPreviousRoute] = React.useState(null)
-
-    React.useEffect(() => {
-
-        if (sessionStorage) {
-            setToken(JSON.parse(sessionStorage.getItem("token")))
-        }
-
-        if (!token && sessionStorage.getItem('token')) {
-            setAxiosConfig({
-                headers: {
-                    authorization: `Bearer ${JSON.parse(sessionStorage.getItem("token")).token}`
-                }
-            })
-        }
-    }, [])
 
     return (
         <LoginState.Provider

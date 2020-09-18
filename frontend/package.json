@@ -16,6 +16,11 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "out": "yarn build && yarn export"
+    "out": "yarn build && yarn export",
+    "serve": "yarn out && serve out",
+    "deploy": "yarn out && firebase deploy"
+  },
+  "devDependencies": {
+    "firebase-tools": "^8.10.0"
   }
 }
