@@ -9,4 +9,8 @@ module.exports = {
             '/Reserve': { page: '/Reserve' },
         }
     },
+    env: {
+        dev: "http://localhost",
+        production: ""
+    }
 }

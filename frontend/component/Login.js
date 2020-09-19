@@ -41,15 +41,6 @@ const Login = ({ children }) => {
                 })
                 setMenuBar('ออกจากระบบ')
             }
-            // if (result.status === 200) {
-            //     axios.post('http://localhost', qs.stringify(form), {
-            //         headers: {
-            //             'Content-Type': 'application/x-www-form-urlencoded'
-            //         }
-            //     })
-            //     setShowModal(false)
-            //     if (sessionStorage) setToken(JSON.parse(sessionStorage.getItem('token')))
-            // }
             else if (result.status === 401) {
                 setToken(null)
             }
@@ -72,9 +63,9 @@ const Login = ({ children }) => {
                 className="login-container"
                 onKeyDown={handleEnter}
             >
-                <button onClick={() => setShowModal(!showModal)}>
+                <div onClick={() => setShowModal(!showModal)}>
                     <img src="https://image.flaticon.com/icons/svg/271/271228.svg" alt="close login bar" />
-                </button>
+                </div>
                 <div className="login-form">
                     <label htmlFor="username">PSU Passport</label>
                     <input type="text" name="username" placeholder="username" onChange={handleForm} />
@@ -89,6 +80,32 @@ const Login = ({ children }) => {
                 </div>
             </div>
             {children}
+            <style jsx>{`
+                    .login-container {
+                        background: #195DBD;
+                    }
+                    .login-container > div:first-child, img:first-child {
+                        grid-column: span 12;
+                        width: 100%;
+                        height: 2em;
+                        cursor: pointer;
+                        background: #6489BD;
+                    }
+                    .login-form > input, select, option{
+                        border-radius: 10px;
+                        height: 2em;
+                        margin: 2em 2px 0 2px;
+                        background: #186487;
+                    }
+                    .login-form > label {
+                        margin: 2em 0 0 0;
+                    }
+                    .login-form > button {
+                        background: #9BBD22;
+                        border-radius: 10px;
+                        margin: 5em 2px 2px 0;
+                    }
+            `}</style>
         </>
     )
     else return <div>{children}</div>

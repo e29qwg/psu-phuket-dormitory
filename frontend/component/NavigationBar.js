@@ -79,6 +79,11 @@ const NavigationBar = () => {
                     <span onClick={handleLogin}>{menuBar}</span>
                 </div>
             }
+            <style jsx>{`
+                .navbar-container > span {
+                    cursor: pointer;
+                }    
+            `}</style>
         </div>
     )
 }
