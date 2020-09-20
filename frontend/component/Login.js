@@ -69,6 +69,7 @@ const Login = ({ children }) => {
                 <div className="login-form">
                     <label htmlFor="username">PSU Passport</label>
                     <input type="text" name="username" placeholder="username" onChange={handleForm} />
+                    <label htmlFor="username">รหัสผ่าน</label>
                     <input type="password" name="password" placeholder="password" onChange={handleForm} />
                     <label htmlFor="สถานะ" className="status">สถานะ</label>
                     <select name="type" onChange={handleForm}>
@@ -82,7 +83,8 @@ const Login = ({ children }) => {
             {children}
             <style jsx>{`
                     .login-container {
-                        background: #195DBD;
+                        background: #269CD4;
+                        font-family: 'Sarabun', sans-serif;
                     }
                     .login-container > div:first-child, img:first-child {
                         grid-column: span 12;
@@ -94,13 +96,14 @@ const Login = ({ children }) => {
                     .login-form > input, select, option{
                         border-radius: 10px;
                         height: 2em;
-                        margin: 2em 2px 0 2px;
-                        background: #186487;
+                        font-family: 'Sarabun', sans-serif;
                     }
                     .login-form > label {
                         margin: 2em 0 0 0;
+                        font-family: 'Sarabun', sans-serif;
                     }
                     .login-form > button {
+                        height: 3em;
                         background: #9BBD22;
                         border-radius: 10px;
                         margin: 5em 2px 2px 0;

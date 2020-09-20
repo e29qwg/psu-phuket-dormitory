@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { LoginState } from '../utils/context'
 import axios from 'axios'
 
@@ -9,6 +9,7 @@ const Profile = () => {
     const [axiosConfig, setAxiosConfig] = AxiosConfig
     const [_token, setToken] = Token
     const [section, setSection] = React.useState(1)
+    const [stepBackground, setStepBackground] = useState({ 1: "", 2: "", 3: "", 4: "", 5: "" })
     const [form, setForm] = React.useState({
         profile: {
             id: "",
@@ -251,6 +252,7 @@ const Profile = () => {
 
     const ProfileForm = () => {
         return <div>
+            {Step()}
             <h2>ข้อมูลเบื้องต้น</h2>
             <label>รหัสนักศึกษา</label>
             <input value={form.profile.id} name="id" onChange={handleFormProfile} />
@@ -274,14 +276,17 @@ const Profile = () => {
             <input value={form.profile.department} name="department" onChange={handleFormProfile} />
             <label>Line ID</label>
             <input value={form.profile.line} name="line" onChange={handleFormProfile} />
-            <button onClick={() => setSection(prev => prev + 1)}>หน้าถัดไป</button>
+            <button onClick={() => {
+                setSection(prev => prev + 1)
+                setStep(section)
+            }}>หน้าถัดไป</button>
         </div>
     }
 
     const Contact = () => {
         return <div>
+            {Step()}
             <h2>ข้อมูลติดต่อ</h2>
-
             <label>เบอร์โทรศัพท์</label>
             <input name="tel" onChange={handleFormContact} />
             <label>อีเมล์</label>
@@ -306,13 +311,20 @@ const Profile = () => {
             <input name="province" onChange={handleFormContact} />
             <label>รหัสไปรษณีย์</label>
             <input name="postalcode" onChange={handleFormContact} />
-            <button onClick={() => setSection(prev => prev - 1)}>หน้าที่แล้ว</button>
-            <button onClick={() => setSection(prev => prev + 1)}>หน้าถัดไป</button>
+            <button onClick={() => {
+                setSection(prev => prev - 1)
+                setStep(section)
+            }}>หน้าที่แล้ว</button>
+            <button onClick={() => {
+                setSection(prev => prev + 1)
+                setStep(section)
+            }}>หน้าถัดไป</button>
         </div>
     }
 
     const Information = () => {
         return <div>
+            {Step()}
             <h2>ข้อมูลการศึกษา</h2>
             <label>จบจากโรงเรียน</label>
             <input name="school" onChange={handleFormInformation} />
@@ -332,13 +344,20 @@ const Profile = () => {
             <input name="desease" onChange={handleFormInformation} />
             <label>แพ้ยา</label>
             <input name="drugallergy" onChange={handleFormInformation} />
-            <button onClick={() => setSection(prev => prev - 1)}>หน้าที่แล้ว</button>
-            <button onClick={() => setSection(prev => prev + 1)}>หน้าถัดไป</button>
+            <button onClick={() => {
+                setSection(prev => prev - 1)
+                setStep(section)
+            }}>หน้าที่แล้ว</button>
+            <button onClick={() => {
+                setSection(prev => prev + 1)
+                setStep(section)
+            }}>หน้าถัดไป</button>
         </div>
     }
 
     const Friend = () => {
         return <div>
+            {Step()}
             <h2>เพื่อนสนิท</h2>
             <label>ชื่อจริง</label>
             <input name="name" onChange={handleFormFriend} />
@@ -352,14 +371,20 @@ const Profile = () => {
             <input name="faculty" onChange={handleFormFriend} />
             <label>สาขา/ภาควิชา</label>
             <input name="department" onChange={handleFormFriend} />
-            <button onClick={() => setSection(prev => prev - 1)}>หน้าที่แล้ว</button>
-            <button onClick={() => setSection(prev => prev + 1)}>หน้าถัดไป</button>
+            <button onClick={() => {
+                setSection(prev => prev - 1)
+                setStep(section)
+            }}>หน้าที่แล้ว</button>
+            <button onClick={() => {
+                setSection(prev => prev + 1)
+                setStep(section)
+            }}>หน้าถัดไป</button>
         </div>
     }
 
     const Family = () => {
         return <div>
-
+            {Step()}
             <h2>ข้อมูลเกี่ยวกับครอบครัว</h2>
             <label>ชื่อจริงบิดา</label>
             <input name="name" onChange={handleFormFamily.dad} />
@@ -414,24 +439,79 @@ const Profile = () => {
             <input name="tel" onChange={handleFormFamily.emergency} />
             <label>ระบบเครือข่ายโทรศัพท์</label>
             <input name="network" onChange={handleFormFamily.emergency} />
-            <button onClick={() => setSection(prev => prev - 1)}>หน้าที่แล้ว</button>
-            <button onClick={() => setSection(prev => prev + 1)}>หน้าถัดไป</button>
+            <button onClick={() => {
+                setSection(prev => prev - 1)
+                setStep(section)
+            }}>หน้าที่แล้ว</button>
+            <button onClick={() => {
+                setSection(prev => prev + 1)
+                setStep(section)
+            }}>หน้าถัดไป</button>
         </div>
     }
 
     const Other = () => {
         return <div>
+            {Step()}
             <h2>ข้อมูลอื่น ๆ</h2>
-
             <label>ความสามารถพิเศษ</label>
             <input name="talent" onChange={handleFormOther} />
             <label>อุปนิสัยส่วนตัว</label>
             <input name="character" onChange={handleFormOther} />
             <label>เคยได้รับตำแหน่งใดในมหาวิทยาลัย/โรงเรียน</label>
             <input name="position" onChange={handleFormOther} />
-            <button onClick={() => setSection(prev => prev - 1)}>ก่อนหน้า</button>
+            <button onClick={() => {
+                setSection(prev => prev - 1)
+                setStep(section)
+            }}>หน้าที่แล้ว</button>
             <button onClick={handleSubmit}>บันทึกข้อมูลส่วนตัว</button>
         </div>
+    }
+
+    const setStep = (section) => {
+        setStepBackground({ ...stepBackground, [section]: "red" })
+    }
+
+    const Step = () => {
+        return (
+            <div>
+                <span style={{ background: stepBackground[1] }}>1</span>
+                <span style={{ background: stepBackground[2] }}>2</span>
+                <span style={{ background: stepBackground[3] }}>3</span>
+                <span style={{ background: stepBackground[4] }}>4</span>
+                <span style={{ background: stepBackground[5] }}>5</span>
+                <style jsx>{`
+                    div {
+                        overflow-wrap: break-word;
+                        text-align: center;
+                        margin: 2em 0 2em 1em;
+                    }
+
+                    div > span {
+                        position: relative;
+                        border: 4px solid #1D3CE0;
+                        border-radius: 50%;
+                        margin: .8rem;
+                        padding: .8em;
+                        background: #1D3CE0;
+                    }
+
+                    div > span::after {
+                        position: absolute;
+                        content: "";
+                        background: #1D3CE0;
+                        width: 1.5em;
+                        height: 4px;
+                        top:22.5px;
+                        left:39.5px;
+                    }
+
+                    div > span:last-child::after {
+                        display: none;
+                    }
+                `}</style>
+            </div>
+        )
     }
 
     return (
@@ -447,11 +527,13 @@ const Profile = () => {
                     background-color: #69B7DB;
                 }
                 .profile-form {
+                    min-width: 550px;
                     background: #269CD4;
                     padding: 2em 5em 2em 5em;
                     color: #FFF;
                     border-radius: 10px;
                     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                    margin: 2em 0 2em 0;
                 }
                 .profile-form > div > input, button, h2 {
                     margin: 0 0 1em 0;

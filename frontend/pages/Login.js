@@ -48,7 +48,7 @@ const Login = () => {
                 setToken(null)
                 // sessionStorage.removeItem("token")
                 // setMenuBar('ลงชื่อเข้าใช้')
-        }
+            }
         } catch (e) {
             console.log(e)
         }
@@ -67,14 +67,15 @@ const Login = () => {
 
     return (
         <div className="login-page-container">
-            <div className="force-login">กรุณาเข้าสู่ระบบ</div>
             <div className="login-form">
+                <h2 className="force-login">กรุณาเข้าสู่ระบบ</h2>
                 <label htmlFor="username">PSU Passport</label>
                 <input type="text" name="username" placeholder="username"
                     onChange={handleForm}
                     onKeyDown={handleEnter}
                 />
 
+                <label htmlFor="username">Password</label>
                 <input type="password" name="password" placeholder="password"
                     onChange={handleForm}
                     onKeyPress={handleEnter}
@@ -82,11 +83,51 @@ const Login = () => {
                 <label htmlFor="สถานะ" className="status">สถานะ</label>
                 <select name="type" onChange={handleForm}>
                     <option value="Students">นักศึกษา</option>
-                    <option value="Staff">เจ้าหน้าที่</option>
-                    <option value="อาจารย์">อาจารย์</option>
+                    <option value="Staff">เจ้าหน้าที่/อาจารย์</option>
                 </select>
                 <button onClick={getAuthen}>Login</button>
             </div>
+            <style jsx>{`
+                    .login-page-container {
+                        min-height: 85vh;
+                        display: flex;
+                        flex-direction: column;
+                        align-content: center;
+                        justify-content: center;
+                        text-align: center;
+                        background: #269CD4;
+                    }
+                    .force-login {
+                        font-size: 25px;
+                        margin: 0;
+                        padding: 0;
+                        font-family: 'Sarabun', sans-serif;
+                    }
+                    .login-form {
+                        padding: 4em 5em 5em 5em;
+                        background: #47C5FF;
+                        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                        border-radius: 15px;
+                    }
+                    .login-form > label {
+                        margin: 1em 0 0 0 ;
+                        text-align: left;
+                    }
+                    .login-form > select {
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .login-form > input, select {
+                        width: 30em;
+                    }
+                    .login-form > input, select, button {
+                        border-radius: 5px;
+                        height: 2em;
+                    }
+                    .login-form > button {
+                        margin: 2em 0 0 0;
+                    }
+            `}</style>
         </div>
     )
 }
