@@ -1,11 +1,9 @@
 const express = require('express');
-const { verifyHeader } = require("../configs/jwt")
 const firestore = require('../configs/firebase')
 const checkType = require('../configs/type')
 
 const router = express.Router()
 const db = firestore.firestore()
-
 
 router.get('/student/room/:floorId/', async (req, res) => {
     try {
@@ -43,7 +41,6 @@ router.get('/student/room/:floorId/', async (req, res) => {
     }
 
 });
-
 
 router.post('/student/room/:floorId/:roomId/:studentId' ,checkType.studentType,(req, res) => {
     try {

@@ -1,7 +1,4 @@
-
-
 class UserUsecase {
-
 
     getRole(dataFromSoup) {
         try {
