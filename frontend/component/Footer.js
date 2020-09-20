@@ -10,7 +10,10 @@ const Footer = () => {
                     Tel: 062-4488584 Fax: 0-7627-6002`}</pre>
             </div>
             <div className="social-container">fb line ig</div>
-            <style jsx>{`
+            <style global jsx>{`
+                .footer-container {
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                }
                 div.footer-container > img {
                     width:10em;
                     height: 4em;
