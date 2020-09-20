@@ -36,7 +36,8 @@ const Login = ({ children }) => {
                 setToken(result.data)
                 setAxiosConfig({
                     headers: {
-                        authorization: `Bearer ${JSON.parse(sessionStorage.getItem("token")).token}`
+                        authorization: `Bearer ${JSON.parse(sessionStorage.getItem("token")).token}`,
+                        type: result.data.type
                     }
                 })
                 setMenuBar('ออกจากระบบ')
