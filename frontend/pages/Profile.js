@@ -224,11 +224,11 @@ const Profile = () => {
 
     const getHeader = () => {
         if (sessionStorage.getItem('token')) {
-            const getType = setToken(JSON.parse(sessionStorage.getItem('token')))
+            setToken(JSON.parse(sessionStorage.getItem('token')))
             setAxiosConfig({
                 headers: {
                     authorization: `Bearer ${JSON.parse(sessionStorage.getItem("token")).token}`,
-                    type: getType.type
+                    type: JSON.parse(sessionStorage.getItem('token')).type
                 }
             })
         }
