@@ -5,7 +5,7 @@ const checkType = {
                 next();
             }   
         } catch (error) {
-            res.status(400).send(error);
+            res.status(403).send(error);
         }
         
     },
@@ -15,7 +15,7 @@ const checkType = {
                 next();
             }   
         } catch (error) {
-            res.status(400).send(error);
+            res.status(403).send(error);
         }
     }
 }

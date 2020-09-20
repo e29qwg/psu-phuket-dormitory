@@ -20,8 +20,6 @@ const createToken = async (user, responseData, _req, res) => {
                   }
                   let encoded = jwt.sign(payload, privateKey, { algorithm: 'HS256' });
                   const docRef = db.collection('token');
-                  const snapshot = await docRef.where('id', '==', `${responseData.userId}`).get();
-
                   const register = docRef.doc(`${responseData.userId}`)
                   await register.set({
                         login: true,

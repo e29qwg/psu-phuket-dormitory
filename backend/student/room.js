@@ -7,7 +7,7 @@ const router = express.Router()
 const db = firestore.firestore()
 
 
-router.get('/student/room/:floorId/',checkType.studentType, async (req, res) => {
+router.get('/student/room/:floorId/', async (req, res) => {
     try {
         const floorId = req.params.floorId;
         const checkRef = db.collection('dormitory').doc('status');
