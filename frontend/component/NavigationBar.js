@@ -82,6 +82,9 @@ const NavigationBar = () => {
             <style jsx>{`
                 .navbar-container > span {
                     cursor: pointer;
+                    font-family: 'Sarabun', sans-serif;
+                    font-size: 18px;
+                    font-weight: 600;
                 }
                 .root-navbar-container {
                     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);

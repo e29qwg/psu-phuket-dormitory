@@ -1,6 +1,7 @@
 :root {
     --heigth-navbar: 5vh;
     font-size: 16px;
+    font-family: 'Sarabun', sans-serif;
 }
 
 .root-container {
@@ -106,10 +107,6 @@ img.hamburger {
         display: flex;
         flex-direction: column;
     }
-}
-
-.login-form>input, button {
-    margin: 5px;
 }
 
 .index-container {
