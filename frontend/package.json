@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.20.0",
+    "firebase": "^7.20.0",
     "next": "^9.5.2",
     "qs": "^6.9.4",
     "react": "^16.13.1",
@@ -13,6 +14,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "next export",
+    "out": "yarn build && yarn export",
+    "serve": "yarn out && serve out",
+    "deploy": "yarn out && firebase deploy"
+  },
+  "devDependencies": {
+    "firebase-tools": "^8.10.0"
   }
 }

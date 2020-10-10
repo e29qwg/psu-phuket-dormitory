@@ -1,52 +1,72 @@
 import React from 'react'
-import axios from 'axios'
-import qs from 'qs'
+import Card from '../component/Card'
 
 const Index = () => {
-
-    const [form, setForm] = React.useState({
-        username: "",
-        password: ""
-    })
-
-    const [response, setResponse] = React.useState()
-
-    const handleForm = (event) => {
-        setForm({
-            ...form,
-            [event.target.name]: event.target.value
-        })
-    }
-
-    const getAuthen = async () => {
-        try {
-            const result = await axios.post('http://localhost', qs.stringify(form), {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                    // 'Content-Type': 'application/json'
-                }
-            })
-            setResponse(result.data)
-            console.log(result.data)
-        } catch (e) {
-            console.log(e)
-        }
-    }
-
+    const news = [
+        {
+            title: "test",
+            img: "https://www.uih.co.th/files/2020/Knowledge/Fake-news/fake-news_9.jpg",
+            description: "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglong"
+        },
+        {
+            title: "test",
+            img: "https://www.uih.co.th/files/2020/Knowledge/Fake-news/fake-news_9.jpg",
+            description: "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglong"
+        },
+        {
+            title: "test",
+            img: "https://www.uih.co.th/files/2020/Knowledge/Fake-news/fake-news_9.jpg",
+            description: "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglong"
+        },
+        {
+            title: "test",
+            img: "https://www.uih.co.th/files/2020/Knowledge/Fake-news/fake-news_9.jpg",
+            description: "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglong"
+        },
+        {
+            title: "test",
+            img: "https://www.uih.co.th/files/2020/Knowledge/Fake-news/fake-news_9.jpg",
+            description: "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglong"
+        },
+        {
+            title: "test",
+            img: "https://www.uih.co.th/files/2020/Knowledge/Fake-news/fake-news_9.jpg",
+            description: "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglong"
+        },
+        {
+            title: "test",
+            img: "https://www.uih.co.th/files/2020/Knowledge/Fake-news/fake-news_9.jpg",
+            description: "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglong"
+        },
+    ]
     React.useEffect(() => {
-
     }, [])
 
     return (
-        <div className="container">
-            <div>{JSON.stringify(response)}</div>
-            <div className="form">
-                <input type="text" name="username" onChange={handleForm} />
-                <input type="password" name="password" onChange={handleForm} />
-                <button onClick={getAuthen}>Login</button>
+        <div className="index-container">
+            <img className="index-background" src='background/cover.jpg' alt="cover" />
+            <div className="Card-container">
+                {news.map((item, key) =>
+                    <Card key={key} item={item} />
+                )}
             </div>
+            <style jsx>{`
+                    .Card-container{
+                        flex:1;
+                        justify-content: center;
+                        display: flex;
+                        flex-direction: row;
+                        flex-wrap: wrap;
+                        background: rgb(26, 62, 112);
+                        background: linear-gradient(180deg, rgba(26, 62, 112, 1) 0%, rgba(22, 119, 125, 1) 120%);
+                    }
+            `}</style>
         </div>
     )
 }
 
+// Index.getInitialProps = async (ctx) => {
+
+//     return { result: "Test" }
+// }
 export default Index
